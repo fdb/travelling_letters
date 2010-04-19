@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Travelling Letters" default="jar">
+    <property name="build.dir" location="build"/>
+    <property name="dist.dir" location="dist"/>
+    <property name="lib.dir" location="lib"/>
+    <property name="src.dir" location="src"/>
+    <path id="build.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+        <!-- Scala compiler -->
+        <taskdef resource="scala/tools/ant/antlib.xml">
+            <classpath>
+                <pathelement location="${lib.dir}/scala-compiler.jar"/>
+                <pathelement location="${lib.dir}/scala-library.jar"/>
+            </classpath>
+        </taskdef>
+    </target>
+
+    <target name="compile" depends="init">
+        <scalac srcdir="${src.dir}"
+                destdir="${build.dir}"
+                classpathref="build.classpath" scalacdebugging="true">
+            <include name="**/*.scala"/>
+        </scalac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar jarfile="${dist.dir}/travellingletters.jar" basedir="${build.dir}"/>
+    </target>
+
+    <target name="run" depends="jar">
+        <java classname="travelling.App" fork="true">
+            <classpath refid="build.classpath"/>
+            <classpath path="${dist.dir}/travellingletters.jar"/>
+        </java>
+    </target>
+
+</project>
