@@ -1,0 +1,5 @@
+package travelling
+
+class Contour() {
+
+}

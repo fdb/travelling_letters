@@ -1,0 +1,2 @@
+# All letters in properties format.
+L = 0,0 20,0 20,80 60,80 60,100 0,100
