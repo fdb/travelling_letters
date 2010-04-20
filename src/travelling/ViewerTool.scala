@@ -7,7 +7,7 @@ import processing.core._
 import PConstants._
 
 
-object App extends processing.core.PApplet {
+class ViewerTool(override val p:ToolContainer) extends Tool(p) {
 
   Letter.parse
   
@@ -16,12 +16,14 @@ object App extends processing.core.PApplet {
   val containBehavior = new Contain(system)
   var offset: Vec = Vec()
 
+  override def name() = "Viewer"
+
   override def setup(): Unit = {
-    size(800, 600, P2D)
-    smooth
+    p.size(800, 600, P2D)
+    p.smooth
 
     containBehavior.max = Vec(800, 600)
-    noStroke
+    p.noStroke
     createLetter("G")
     createLetter("H")
     createLetter("E")
@@ -30,24 +32,23 @@ object App extends processing.core.PApplet {
   }
 
   override def draw(): Unit = {
-
     var o = Vec()
     system.flocks.foreach((f:Flock) => {
       updateParticlesTarget(f.asInstanceOf[LetterFlock], o)
       o += Vec(100, 0)
     })
   
-    if (mousePressed) {
+    if (p.mouseDown) {
       system.flocks.foreach(shuffleParticles)
     }
 
-    background(51)
-    fill(255)
+    p.background(51)
+    p.fill(255)
 
     system.update(0.1f)
 
-    noFill
-    stroke(255)
+    p.noFill
+    p.stroke(255)
 
     system.flocks.foreach(drawFlock)
 
@@ -68,18 +69,18 @@ object App extends processing.core.PApplet {
   }
 
   def drawFlock(flock: Flock) {
-    beginShape
-    for (p <- flock.particles) {
-      vertex(p.pos.x, p.pos.y)
+    p.beginShape
+    for (prt <- flock.particles) {
+      p.vertex(prt.pos.x, prt.pos.y)
     }
-    endShape(CLOSE)
+    p.endShape(CLOSE)
   }
 
   def updateParticlesTarget(flock : LetterFlock, offset: Vec) {
     val letter = flock.letter
     for (i <- 0 until letter.shape.size) {
-      val p = flock.particles(i)
-      p.target = letter.shape.points(i) + Vec(mouseX, mouseY) + offset
+      val part = flock.particles(i)
+      part.target = letter.shape.points(i) + Vec(p.mouseX, p.mouseY) + offset
     }
   }
 
@@ -90,20 +91,10 @@ object App extends processing.core.PApplet {
   }
 
   def drawLetter(l: Letter, x: Float, y: Float) {
-    beginShape();
+    p.beginShape()
     for (v <- l.shape.points) {
-      vertex(v.x + x, v.y + y)
+      p.vertex(v.x + x, v.y + y)
     }
-    endShape();
-  }
-
-  def main(args: Array[String]): Unit = {
-    var frame = new javax.swing.JFrame("Travelling Letters")
-    frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE)
-    var applet = App
-    frame.getContentPane().add(applet)
-    frame.setSize(800, 600)
-    applet.init
-    frame.setVisible(true)
+    p.endShape()
   }
 }

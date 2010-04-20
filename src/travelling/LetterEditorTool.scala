@@ -7,7 +7,7 @@ import java.awt.event.{KeyEvent, MouseEvent}
 /**
  * Small app to draw letters
  */
-object LetterDrawer extends processing.core.PApplet {
+class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
   val HANDLE_SIZE = 3
   val GRID_SIZE = 10
 
@@ -16,22 +16,26 @@ object LetterDrawer extends processing.core.PApplet {
   var currentLetter: Letter = Letter("L")
   var draggingIndex: Int = -1
 
+  override def name() = "Letter Editor"
+
   override def setup {
-    size(800, 600, P2D)
-    smooth
+    p.size(800, 600, P2D)
+    p.smooth
   }
 
   override def draw {
-    background(50)
+    p.background(50)
     drawGrid
 
-    pushMatrix
-    translate(offset.x, offset.y)
+    p.pushMatrix
+    p.translate(offset.x, offset.y)
+    drawLetterBlock
     drawCurrentLetter
     drawHandles
-    popMatrix
+    p.popMatrix
 
     drawLetterDock
+    drawHelp
   }
 
   def reloadLetters {
@@ -40,68 +44,95 @@ object LetterDrawer extends processing.core.PApplet {
   }
 
   def drawGrid {
-    noFill
-    stroke(64)
-    for (y <- 0 until (height, GRID_SIZE)) {
-      line(0, y, width, y)
+    p.noFill
+    p.stroke(64)
+    for (y <- 0 until (p.height, GRID_SIZE)) {
+      p.line(0, y, p.width, y)
     }
-    for (x <- 0 until (width, GRID_SIZE)) {
-      line(x, 0, x, height)
+    for (x <- 0 until (p.width, GRID_SIZE)) {
+      p.line(x, 0, x, p.height)
     }
+  }
+
+  def drawLetterBlock {
+    p.stroke(90)
+    p.noFill
+    p.rect(0, 0, 100, 100)
   }
 
   def drawCurrentLetter {
-    drawLetter(currentLetter)
+    drawLetter(currentLetter, true)
   }
 
-  def drawLetter(letter: Letter) {
-    noFill
-    stroke(255)
-    beginShape
+  def drawLetter(letter: Letter, numbered: Boolean = false) {
+    p.noFill
+    p.stroke(255)
+    p.beginShape
     for (v <- letter.shape.points)
-      vertex(v.x, v.y)
-    endShape(CLOSE)
+      p.vertex(v.x, v.y)
+    p.endShape(CLOSE)
+    if (numbered) {
+      p.noStroke
+      p.fill(255)
+      var i = 0
+      for (v <- letter.shape.points) {
+        p.text("" + i, v.x + 4, v.y - 4)
+        i += 1
+      }
+    }
   }
 
   def drawHandles {
-    fill(0, 0, 180)
-    noStroke
-    beginShape(QUADS)
+    p.fill(0, 0, 180)
+    p.noStroke
+    p.beginShape(QUADS)
     for (v <- currentLetter.shape.points)
       drawHandleQuad(v)
-    endShape
+    p.endShape
   }
 
   def drawHandleQuad(v: Vec) {
-    vertex(v.x - HANDLE_SIZE, v.y - HANDLE_SIZE)
-    vertex(v.x + HANDLE_SIZE, v.y - HANDLE_SIZE)
-    vertex(v.x + HANDLE_SIZE, v.y + HANDLE_SIZE)
-    vertex(v.x - HANDLE_SIZE, v.y + HANDLE_SIZE)
+    p.vertex(v.x - HANDLE_SIZE, v.y - HANDLE_SIZE)
+    p.vertex(v.x + HANDLE_SIZE, v.y - HANDLE_SIZE)
+    p.vertex(v.x + HANDLE_SIZE, v.y + HANDLE_SIZE)
+    p.vertex(v.x - HANDLE_SIZE, v.y + HANDLE_SIZE)
   }
 
   def drawLetterDock() {
-    pushMatrix
-    translate(0, 500)
-    fill(20)
-    rect(0, 0, width, 1)
-    fill(30)
-    rect(0, 1, width, 1)
-    fill(40)
-    rect(0, 2, width, 100)
-    translate(10, 10)
-    scale(0.5f)
+    p.pushMatrix
+    p.translate(0, 500)
+    p.fill(20)
+    p.rect(0, 0, p.width, 1)
+    p.fill(30)
+    p.rect(0, 1, p.width, 1)
+    p.fill(40)
+    p.rect(0, 2, p.width, 100)
+    p.translate(10, 10)
+    p.scale(0.5f)
     for ((c, letter) <- Letter.letters) {
       drawLetterLabel(c)
       drawLetter(letter)
-      translate(100, 0)
+      p.translate(100, 0)
     }
-    popMatrix
+    p.popMatrix
+  }
+
+  def drawHelp() {
+    p.pushMatrix
+    p.translate(p.width-210, 30)
+    p.fill(0, 100)
+    p.noStroke
+    p.rect(0, 0, 200, 40)
+    p.fill(255)
+    p.textAlign(LEFT)
+    p.text("r: reload", 10, 20)
+    p.popMatrix
   }
 
   def drawLetterLabel(c: String) {
-    fill(255)
-    textAlign(CENTER)
-    text(c, 30, 120)
+    p.fill(255)
+    p.textAlign(CENTER)
+    p.text(c, 30, 120)
   }
 
   def handleRect(v: Vec) = new Rect(v.x - HANDLE_SIZE, v.y - HANDLE_SIZE, HANDLE_SIZE * 2, HANDLE_SIZE * 2)
@@ -143,6 +174,7 @@ object LetterDrawer extends processing.core.PApplet {
   override def keyPressed(e: KeyEvent) {
     e.getKeyChar match {
       case 'r' => reloadLetters
+      case _ => {}
     }
   }
 
@@ -156,15 +188,4 @@ object LetterDrawer extends processing.core.PApplet {
     }
     -1
   }
-
-  def main(args: Array[String]): Unit = {
-    var frame = new javax.swing.JFrame("Letter Drawer")
-    frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE)
-    var applet = LetterDrawer
-    frame.getContentPane().add(applet)
-    frame.setSize(800, 600)
-    applet.init
-    frame.setVisible(true)
-  }
-
 }

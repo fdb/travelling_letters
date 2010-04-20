@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Travelling Letters" default="jar">
+<project name="TravellingLetters" default="dist-mac">
+    <property file="version.properties"/>
+    <fail unless="app.version" message="File version.properties should specify app.version."/>
     <property name="build.dir" location="build"/>
     <property name="dist.dir" location="dist"/>
     <property name="lib.dir" location="lib"/>
@@ -9,6 +11,10 @@
             <include name="*.jar"/>
         </fileset>
     </path>
+    <property name="dist.mac" value="${dist.dir}/${ant.project.name}"/>
+    <property name="dist.mac.app" value="${dist.mac}/${ant.project.name}.app"/>
+    <property name="apple.appstub"
+              location="/System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/>
 
     <target name="clean">
         <delete dir="${build.dir}"/>
@@ -36,21 +42,53 @@
     </target>
 
     <target name="jar" depends="compile">
-        <jar jarfile="${dist.dir}/travellingletters.jar" basedir="${build.dir}"/>
+        <jar jarfile="${dist.dir}/travelling-letters.jar" basedir="${build.dir}"/>
     </target>
 
-    <target name="run-app" depends="jar">
-        <java classname="travelling.App" fork="true">
+    <target name="run" depends="jar">
+        <java classname="travelling.Letters" fork="true">
             <classpath refid="build.classpath"/>
-            <classpath path="${dist.dir}/travellingletters.jar"/>
+            <classpath path="${dist.dir}/travelling-letters.jar"/>
         </java>
     </target>
 
-    <target name="run-editor" depends="jar">
-        <java classname="travelling.LetterDrawer" fork="true">
-            <classpath refid="build.classpath"/>
-            <classpath path="${dist.dir}/travellingletters.jar"/>
-        </java>
+    <target name="dist-mac" depends="jar">
+        <mkdir dir="${dist.mac}"/>
+        <mkdir dir="${dist.mac.app}/Contents/MacOS"/>
+        <mkdir dir="${dist.mac.app}/Contents/Resources/Java"/>
+        <!-- Copy library and program archives-->
+        <copy todir="${dist.mac.app}/Contents/Resources/Java">
+            <fileset dir="${lib.dir}">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${dist.dir}">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+        <!-- Copy application stub -->
+        <copy file="${apple.appstub}" toFile="${dist.mac.app}/Contents/MacOS/${ant.project.name}"/>
+        <!-- fix stub permissions -->
+        <chmod file="${dist.mac.app}/Contents/MacOS/${ant.project.name}" perm="755"/>
+        <!-- Copy Info.plist -->
+        <copy file="res/Info.plist" todir="${dist.mac.app}/Contents"/>
+        <!-- Replace version number -->
+        <replace file="${dist.mac.app}/Contents/Info.plist" token="@@VERSION@@" value="${app.version}"/>
+        <!-- Copy version number -->
+        <copy file="version.properties" todir="${dist.mac.app}/Contents/Resources"/>
+        <!-- Copy letters.txt -->
+        <copy file="letters.txt" todir="${dist.mac.app}/Contents/Resources"/>
+        <!-- Make directory into a bundle -->
+        <exec executable="/Developer/Tools/SetFile">
+            <arg line="-a B ${dist.mac.app}"/>
+        </exec>
+        <!-- Bundle into DMG -->
+        <exec executable="hdiutil">
+            <arg line="create -srcfolder ${dist.mac}  ${dist.dir}/${ant.project.name}-${app.version}.dmg"/>
+        </exec>
+        <!-- Internet-enable DMG -->
+        <exec executable="hdiutil">
+            <arg line="internet-enable ${dist.dir}/${ant.project.name}-${app.version}.dmg"/>
+        </exec>
     </target>
 
 </project>
