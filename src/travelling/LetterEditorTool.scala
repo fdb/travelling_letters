@@ -70,7 +70,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     p.beginShape
     for (v <- letter.shape.points)
       p.vertex(v.x, v.y)
-    p.endShape(CLOSE)
+    p.endShape()
     if (numbered) {
       p.noStroke
       p.fill(255)

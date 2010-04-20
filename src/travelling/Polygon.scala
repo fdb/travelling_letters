@@ -21,7 +21,7 @@ object Polygon {
 class Polygon(val points: Seq[Vec]) {
   var segmentLengths: List[Float] = null
   var totalLength = 0f
-  var closed = true
+  var closed = false
 
   def size() = points.size
 

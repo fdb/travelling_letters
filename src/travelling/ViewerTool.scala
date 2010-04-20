@@ -5,16 +5,17 @@ import scala.math.random
 
 import processing.core._
 import PConstants._
+import java.awt.event.KeyEvent
 
 
-class ViewerTool(override val p:ToolContainer) extends Tool(p) {
-
+class ViewerTool(override val p: ToolContainer) extends Tool(p) {
   Letter.parse
-  
+
   val system = new ParticleSystem(800, 600)
   val attractorBehavior = new AttractToTarget(system)
   val containBehavior = new Contain(system)
   var offset: Vec = Vec()
+  var text: String = "HELL"
 
   override def name() = "Viewer"
 
@@ -24,20 +25,16 @@ class ViewerTool(override val p:ToolContainer) extends Tool(p) {
 
     containBehavior.max = Vec(800, 600)
     p.noStroke
-    createLetter("G")
-    createLetter("H")
-    createLetter("E")
-    createLetter("L")
-    createLetter("L")
+    for (t <- text) createLetter(t.toString)
   }
 
   override def draw(): Unit = {
     var o = Vec()
-    system.flocks.foreach((f:Flock) => {
+    system.flocks.foreach((f: Flock) => {
       updateParticlesTarget(f.asInstanceOf[LetterFlock], o)
       o += Vec(100, 0)
     })
-  
+
     if (p.mouseDown) {
       system.flocks.foreach(shuffleParticles)
     }
@@ -59,6 +56,17 @@ class ViewerTool(override val p:ToolContainer) extends Tool(p) {
     //text("velocity: " + p.velocity, 20, 40)
   }
 
+
+  override def toolActivated() {
+    resetText
+  }
+
+  def resetText {
+    system.flocks = List()
+    offset = Vec()
+    for (t <- text) createLetter(t.toString)
+  }
+
   def createLetter(character: String) = {
     val letter = Letter(character)
     val flock = new LetterFlock(system, letter, offset)
@@ -68,15 +76,30 @@ class ViewerTool(override val p:ToolContainer) extends Tool(p) {
     letter
   }
 
+
+  override def keyPressed(e: KeyEvent) {
+    if (e.getKeyCode == KeyEvent.VK_BACK_SPACE) {
+      text = text.substring(0, text.length - 1)
+      resetText
+    } else {
+      val character = e.getKeyChar.toString
+      if (Letter.exists(character)) {
+        createLetter(character)
+        text += character
+        resetText
+      }
+    }
+  }
+
   def drawFlock(flock: Flock) {
     p.beginShape
     for (prt <- flock.particles) {
       p.vertex(prt.pos.x, prt.pos.y)
     }
-    p.endShape(CLOSE)
+    p.endShape()
   }
 
-  def updateParticlesTarget(flock : LetterFlock, offset: Vec) {
+  def updateParticlesTarget(flock: LetterFlock, offset: Vec) {
     val letter = flock.letter
     for (i <- 0 until letter.shape.size) {
       val part = flock.particles(i)
@@ -84,7 +107,7 @@ class ViewerTool(override val p:ToolContainer) extends Tool(p) {
     }
   }
 
-  def shuffleParticles(flock : Flock) {
+  def shuffleParticles(flock: Flock) {
     val particles = java.util.Arrays.asList(flock.particles: _*)
     java.util.Collections.shuffle(particles)
     flock.particles = particles.iterator.toList
