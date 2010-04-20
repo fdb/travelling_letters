@@ -22,8 +22,11 @@ object App extends processing.core.PApplet {
 
     containBehavior.max = Vec(800, 600)
     noStroke
+    createLetter("G")
+    createLetter("H")
+    createLetter("E")
     createLetter("L")
-    createLetter("k")
+    createLetter("L")
   }
 
   override def draw(): Unit = {

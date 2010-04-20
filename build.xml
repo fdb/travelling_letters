@@ -30,7 +30,7 @@
     <target name="compile" depends="init">
         <scalac srcdir="${src.dir}"
                 destdir="${build.dir}"
-                classpathref="build.classpath" scalacdebugging="true">
+                classpathref="build.classpath">
             <include name="**/*.scala"/>
         </scalac>
     </target>
@@ -39,8 +39,15 @@
         <jar jarfile="${dist.dir}/travellingletters.jar" basedir="${build.dir}"/>
     </target>
 
-    <target name="run" depends="jar">
+    <target name="run-app" depends="jar">
         <java classname="travelling.App" fork="true">
+            <classpath refid="build.classpath"/>
+            <classpath path="${dist.dir}/travellingletters.jar"/>
+        </java>
+    </target>
+
+    <target name="run-editor" depends="jar">
+        <java classname="travelling.LetterDrawer" fork="true">
             <classpath refid="build.classpath"/>
             <classpath path="${dist.dir}/travellingletters.jar"/>
         </java>

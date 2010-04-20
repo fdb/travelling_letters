@@ -4,7 +4,7 @@ class ParticleSystem(val width: Float, val height: Float) {
 
 	var timeStep = 1
   var flocks : Seq[Flock] = List()
-  var friction = 0.97f
+  var friction = 0.99f
 	
 	def createParticles(amount:Int) {
 //		for (i <- 0 to amount) {

@@ -33,7 +33,7 @@ object Letter {
   def parse(character: String, s: String): Letter = {
     val points = s.split(" ").toList.map(Vec(_))
     val poly = new Polygon(points)
-    //new Letter(character, poly.resampledByAmount(100))
+    //new Letter(character, poly.resampledByAmount(30))
     new Letter(character, poly)
   }
 
