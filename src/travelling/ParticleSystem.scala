@@ -3,8 +3,7 @@ package travelling
 class ParticleSystem(val width: Float, val height: Float) {
 
 	var timeStep = 1
-	var particles : Seq[Particle]= List()
-	var behaviors: Seq[Behavior] = List()
+  var flocks : Seq[Flock] = List()
   var friction = 0.97f
 	
 	def createParticles(amount:Int) {
@@ -14,9 +13,6 @@ class ParticleSystem(val width: Float, val height: Float) {
 	}
 	
 	def update(dt : Float) {
-		for (b <- behaviors) {
-			particles foreach (b.apply(_, dt))
-		}
-		particles foreach (_.update(dt))
+    flocks.foreach(_.update(dt))
 	}
 }

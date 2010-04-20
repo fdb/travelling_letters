@@ -1,72 +1,89 @@
 package travelling
 
 import scala.collection.JavaConversions._
+import scala.math.random
+
+import processing.core._
+import PConstants._
 
 
 object App extends processing.core.PApplet {
-  import processing.core._;
 
+  Letter.parse
+  
   val system = new ParticleSystem(800, 600)
   val attractorBehavior = new AttractToTarget(system)
   val containBehavior = new Contain(system)
-  var letter: Letter = null
+  var offset: Vec = Vec()
 
   override def setup(): Unit = {
-    size(800, 600, PConstants.P2D)
+    size(800, 600, P2D)
+    smooth
 
     containBehavior.max = Vec(800, 600)
-    system.behaviors = List(attractorBehavior, containBehavior)
     noStroke
-    Letter.parse
-    letter = Letter("L")
-
-    val particles = (0 until letter.shape.size).map((i: Int) => {
-      val p = new Particle(system)
-      p.pos = letter.shape.points(i) + 50
-      p.target = letter.shape.points(i) + Vec(200, 50)
-      p
-    })
-    system.particles = particles
-
+    createLetter("L")
+    createLetter("k")
   }
 
   override def draw(): Unit = {
-    updateParticlesTarget
 
+    var o = Vec()
+    system.flocks.foreach((f:Flock) => {
+      updateParticlesTarget(f.asInstanceOf[LetterFlock], o)
+      o += Vec(100, 0)
+    })
+  
     if (mousePressed) {
-      shuffleParticles
+      system.flocks.foreach(shuffleParticles)
     }
 
     background(51)
     fill(255)
 
     system.update(0.1f)
-    system.particles foreach (drawParticle(_))
+
+    noFill
+    stroke(255)
+
+    system.flocks.foreach(drawFlock)
 
     //drawLetter(letter, 200, 200)
 
-    val p = system.particles(0)
-    text("steer: " + p.steer, 20, 20)
-    text("velocity: " + p.velocity, 20, 40)
-    text("velocityMax: " + p.velocityMax, 20, 60)
-
+    //val p = system.particles(0)
+    //text("steer: " + p.steer, 20, 20)
+    //text("velocity: " + p.velocity, 20, 40)
   }
 
-  def updateParticlesTarget() {
+  def createLetter(character: String) = {
+    val letter = Letter(character)
+    val flock = new LetterFlock(system, letter, offset)
+    flock.behaviors = List(attractorBehavior, containBehavior)
+    system.flocks = system.flocks.toList ::: List(flock)
+    offset += Vec(100, 0)
+    letter
+  }
+
+  def drawFlock(flock: Flock) {
+    beginShape
+    for (p <- flock.particles) {
+      vertex(p.pos.x, p.pos.y)
+    }
+    endShape(CLOSE)
+  }
+
+  def updateParticlesTarget(flock : LetterFlock, offset: Vec) {
+    val letter = flock.letter
     for (i <- 0 until letter.shape.size) {
-      val p = system.particles(i)
-      p.target = letter.shape.points(i) + Vec(mouseX, mouseY)
+      val p = flock.particles(i)
+      p.target = letter.shape.points(i) + Vec(mouseX, mouseY) + offset
     }
   }
 
-  def shuffleParticles() {
-    val particles = java.util.Arrays.asList(system.particles: _*)
+  def shuffleParticles(flock : Flock) {
+    val particles = java.util.Arrays.asList(flock.particles: _*)
     java.util.Collections.shuffle(particles)
-    system.particles = particles.iterator.toList
-  }
-
-  def drawParticle(p: Particle) {
-    rect(p.pos.x, p.pos.y, 1, 1)
+    flock.particles = particles.iterator.toList
   }
 
   def drawLetter(l: Letter, x: Float, y: Float) {

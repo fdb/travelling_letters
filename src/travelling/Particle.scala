@@ -2,9 +2,9 @@ package travelling
 
 import scala.math.random
 
-class Particle(val system: ParticleSystem) {
+class Particle(val flock: Flock) {
 	
-	var pos = Vec.random(system.width, system.height)
+	var pos = Vec.random(flock.system.width, flock.system.height)
 	var velocity = Vec()
 	var steer = Vec()
 	var steerMax = 1f
@@ -12,7 +12,9 @@ class Particle(val system: ParticleSystem) {
 	var velocityMax = 180f + (random.toFloat * 10f)
   var target = Vec()
 	//var lifeTime = 10 * 1000f
-	
+
+  def system() = flock.system
+
 	def update(dt:Float) {
 		age += dt
 		updatePosition(dt)
