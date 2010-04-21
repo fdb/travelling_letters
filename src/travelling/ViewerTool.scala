@@ -15,7 +15,7 @@ class ViewerTool(override val p: ToolContainer) extends Tool(p) {
   val attractorBehavior = new AttractToTarget(system)
   val containBehavior = new Contain(system)
   var offset: Vec = Vec()
-  var text: String = "HELL"
+  var text: String = "HELLO"
 
   override def name() = "Viewer"
 
