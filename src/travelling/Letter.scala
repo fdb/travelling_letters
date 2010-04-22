@@ -6,9 +6,7 @@ import scala.collection.mutable.Map
 import scala.collection.JavaConversions._
 
 object Letter {
-  val properties = new Properties
   val letters: Map[String, Letter] = Map()
-  val LETTERS_FILE = "letters.txt"
 
   def exists(character: String) = letters.contains(character)
   def apply(character: String) = letters(character)
@@ -17,7 +15,7 @@ object Letter {
     try {
       letters.clear
       val properties = new Properties
-      properties.load(new FileInputStream(LETTERS_FILE))
+      properties.load(new FileInputStream(Letters.lettersFile))
       for (character <- properties.keys()) {
         val s = properties.get(character.toString)
         val letter = parse(character.toString, s.toString)
@@ -45,7 +43,7 @@ object Letter {
         val s = letter.toPropertiesString
         properties.put(letter.character, s)
       }
-      properties.store(new FileOutputStream(LETTERS_FILE), "")
+      properties.store(new FileOutputStream(Letters.lettersFile), "")
     } catch {
       case ex: IOException => {
         println("Error saving properties" + ex.getMessage())
