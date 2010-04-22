@@ -1,8 +1,6 @@
 package travelling
 
-import scala.math.sqrt
-import scala.math.random
-import scala.math.abs
+import scala.math.{sqrt,random,abs,pow}
 
 object Vec {
   val ZERO = new Vec
@@ -25,6 +23,54 @@ object Vec {
   }
 
   def random(xRange: Float, yRange: Float) = new Vec(scala.math.random.toFloat * xRange, scala.math.random.toFloat * yRange)
+  
+
+  def lineLength(x0: Float, y0: Float, x1: Float, y1: Float) = {
+    val x = pow(abs(x0 - x1), 2);
+    val y = pow(abs(y0 - y1), 2);
+    Math.sqrt(x + y).toFloat
+  }
+
+  def linePoint(t: Float, x0: Float, y0: Float, x1: Float, y1: Float) = {
+    Vec(
+      x0 + t * (x1 - x0),
+      y0 + t * (y1 - y0))
+  }
+    
+  def distance(a: Vec, b: Vec) = {
+    val t = b - a
+    sqrt(pow(t.x,2)+pow(t.y,2)).toFloat
+  }
+    
+  def dot(a: Vec, b: Vec) = {
+    a.x  * b.x + a.y * b.y
+  }
+  
+  def shortestDistance(a: Vec, b: Vec, pt: Vec) = {
+    // Minimum distance between line segment ab and point pt
+    // Calculate vector a/b
+    val t = b - a
+    // |b-a|^2 -- and avoid doing a square root.
+    val lengthSquared = pow(t.x, 2) + pow(t.y, 2)
+    // If a == b, return the distance from endpoint
+    if (lengthSquared == 0f) {
+  	  Vec.distance(a, pt)
+    } else {
+      // Line extending the segment, a + t (b - a)
+      val tmp = (dot(pt - a, t) / lengthSquared).toFloat
+      if (tmp < 0) {
+        // Extending beyond a
+        distance(pt, a)
+      } else if (tmp > 1) {
+    	  // Extending beyond b
+    	  distance(pt, b)
+      } else {
+        // Project onto the line
+    	val projection = a + t * tmp
+    	distance(pt, projection)
+      }
+    }
+  }
 }
 
 class Vec(val x: Float, val y: Float) {

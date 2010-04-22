@@ -2,35 +2,6 @@ package travelling
 
 import scala.math.{ceil,sqrt,pow,abs}
 
-object Polygon {
-  def lineLength(x0: Float, y0: Float, x1: Float, y1: Float) = {
-    val x = pow(abs(x0 - x1), 2);
-    val y = pow(abs(y0 - y1), 2);
-    Math.sqrt(x + y).toFloat
-  }
-
-  def linePoint(t: Float, x0: Float, y0: Float, x1: Float, y1: Float) = {
-    Vec(
-      x0 + t * (x1 - x0),
-      y0 + t * (y1 - y0))
-  }
-
-  def shortestDistance(a: Vec, b: Vec, pt: Vec) = {
-    // Calculate vector a/b
-    val t = b - a
-    // Length of line segment a/b
-    val length = sqrt(pow(t.x,2)+pow(t.y,2)).toFloat
-    // Unit vector of ab
-    val uv = t / length
-    // Normal unit vector ab
-    val normal = Vec(-uv.y, uv.x)
-    // Vector ac
-    val ac = pt - a
-    // Projection of ac to n (the minimum distance)
-    abs(ac.x * normal.x + ac.y * normal.y)
-  }
-}
-
 class Polygon(val points: Seq[Vec]) {
   var segmentLengths: List[Float] = null
   var totalLength = 0f
@@ -70,7 +41,7 @@ class Polygon(val points: Seq[Vec]) {
     //    }
     val pt0 = pointForIndex(segmentIndex)
 
-    Polygon.linePoint(resT, pt0.x, pt0.y, pt1.x, pt1.y)
+    Vec.linePoint(resT, pt0.x, pt0.y, pt1.x, pt1.y)
   }
 
   def pointForIndex(index: Int) = {
@@ -88,10 +59,10 @@ class Polygon(val points: Seq[Vec]) {
       yield (points(i-1), points(i))
   }
 
-  def segmentForPoint(pt: Vec, threshold: Float = 5) : Int = {
+  def segmentForPoint(pt: Vec, threshold: Float = 3) : Int = {
     var i = 0
     for (segment <- segments) {
-      if (Polygon.shortestDistance(segment._1, segment._2, pt) < threshold) return i
+      if (Vec.shortestDistance(segment._1, segment._2, pt) < threshold) return i
       i += 1
     }
     return -1
@@ -125,7 +96,7 @@ class Polygon(val points: Seq[Vec]) {
     while (i < points.size) {
       val pt = points(i)
       val pt0 = points(i - 1)
-      val length = Polygon.lineLength(pt0.x, pt0.y, pt.x, pt.y)
+      val length = Vec.lineLength(pt0.x, pt0.y, pt.x, pt.y)
       segmentLengths = segmentLengths ::: List(length)
       totalLength += length
       i += 1
@@ -133,11 +104,10 @@ class Polygon(val points: Seq[Vec]) {
     if (closed) {
       val pt0 = points(points.size - 1)
       val pt1 = points(0)
-      val length = Polygon.lineLength(pt0.x, pt0.y, pt1.x, pt1.y)
+      val length = Vec.lineLength(pt0.x, pt0.y, pt1.x, pt1.y)
       segmentLengths = segmentLengths ::: List(length)
       totalLength += length
     }
-
   }
 
 

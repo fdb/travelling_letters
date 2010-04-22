@@ -79,7 +79,7 @@ class Letter(val character: String, var shape: Polygon) {
       val point = shape.points(i)
       if (i == index) {
     	val nextPoint = shape.points(i + 1)
-    	val middlePoint = Polygon.linePoint(0.5f, point.x, point.y, nextPoint.x, nextPoint.y)
+    	val middlePoint = Vec.linePoint(0.5f, point.x, point.y, nextPoint.x, nextPoint.y)
     	newPoints = newPoints ::: List(point)
     	newPoints = newPoints ::: List(middlePoint)
       } else {

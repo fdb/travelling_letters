@@ -38,17 +38,11 @@ class PolygonTest {
     assertEquals(0, p.segmentForPoint(Vec(0, 20)))
     assertEquals(1, p.segmentForPoint(Vec(20, 100)))
     // Within the threshold for the segment
-    assertEquals(0, p.segmentForPoint(Vec(3, 20)))
+    assertEquals(0, p.segmentForPoint(Vec(2, 20)))
     assertEquals(1, p.segmentForPoint(Vec(102, 102)))
     // Outside of the threshold
     assertEquals(-1, p.segmentForPoint(Vec(10, 20)))
     assertEquals(-1, p.segmentForPoint(Vec(105, 105)))
-  }
-
-  @Test
-  def testShortestDistance {
-    val d = Polygon.shortestDistance(Vec(1, 1), Vec(2, 2), Vec(2, 0))
-    assertEquals(1.414f, d, 0.001f)
   }
 
 }
