@@ -10,6 +10,9 @@ import java.awt.event.{KeyEvent, MouseEvent}
 class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
   val HANDLE_SIZE = 3
   val GRID_SIZE = 10
+  val LETTER_SIZE = 100f
+  val DOCK_SCALE = 0.3f
+  val DOCK_LETTER_MARGIN = 10
 
   Letter.parse
   val offset = Vec(100, 100)
@@ -58,7 +61,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
   def drawLetterBlock {
     p.stroke(90)
     p.noFill
-    p.rect(0, 0, 100, 100)
+    p.rect(0, 0, LETTER_SIZE, LETTER_SIZE)
   }
 
   def drawCurrentLetter {
@@ -127,8 +130,8 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     p.rect(0, 1, p.width, 1)
     p.fill(40)
     p.rect(0, 2, p.width, 100)
-    p.translate(10, 5)
-    p.scale(0.3f)
+    p.translate(DOCK_LETTER_MARGIN, 5)
+    p.scale(DOCK_SCALE)
     for ((c, letter) <- Letter.letters) {
       drawLetterLabel(c)
       drawLetter(letter)
@@ -179,7 +182,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
         }
       }
     } else {
-      val letterIndex = (e.getX() - 10) / 50
+      val letterIndex =  ((e.getX() - DOCK_LETTER_MARGIN) / (LETTER_SIZE * DOCK_SCALE)).toInt
       currentLetter = Letter(Letter.letters.keys.toList(letterIndex))
     }
   }
