@@ -36,7 +36,8 @@
     <target name="compile" depends="init">
         <scalac srcdir="${src.dir}"
                 destdir="${build.dir}"
-                classpathref="build.classpath">
+                classpathref="build.classpath"
+                deprecation="on">
             <include name="**/*.scala"/>
         </scalac>
     </target>
