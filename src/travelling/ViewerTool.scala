@@ -20,9 +20,6 @@ class ViewerTool(override val p: ToolContainer) extends Tool(p) {
   override def name() = "Viewer"
 
   override def setup(): Unit = {
-    p.size(800, 600, P2D)
-    p.smooth
-
     containBehavior.max = Vec(800, 600)
     p.noStroke
     for (t <- text) createLetter(t.toString)

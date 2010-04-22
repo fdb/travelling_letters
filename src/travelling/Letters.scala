@@ -39,8 +39,10 @@ object Letters extends ToolContainer {
   tool = VIEWER_TOOL
 
   override def setup {
-    size(800, 600, P2D)
+    size(800, 600, JAVA2D)
     smooth
+    val pFont = createFont("Lucida Grande", 11)
+    textFont(pFont)
     super.setup
   }
 

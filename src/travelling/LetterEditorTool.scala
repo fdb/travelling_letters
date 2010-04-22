@@ -21,11 +21,6 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
 
   override def name() = "Letter Editor"
 
-  override def setup {
-    p.size(800, 600, P2D)
-    p.smooth
-  }
-
   override def draw {
     p.background(50)
     drawGrid
