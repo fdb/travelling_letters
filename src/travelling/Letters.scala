@@ -75,12 +75,12 @@ object Letters extends ToolContainer {
 
 
   def appLabel(label: String, rect: Rect) = {
-    shadowText(label, rect.x, rect.y + 15)
+    shadowText(label, rect.x, rect.y + 13)
     mouseDown && rect.intersects(Vec(mouseX, mouseY))
   }
 
   def drawVersionNumber {
-    shadowText(version, width - 50, 15)
+    shadowText(version, width - 50, 13)
   }
 
   def shadowText(txt: String, x: Float, y: Float) {
