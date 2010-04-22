@@ -135,7 +135,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     for ((c, letter) <- Letter.letters) {
       drawLetterLabel(c)
       drawLetter(letter)
-      p.translate(100, 0)
+      p.translate(LETTER_SIZE + DOCK_LETTER_MARGIN, 0)
     }
     p.popMatrix
   }
@@ -182,7 +182,8 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
         }
       }
     } else {
-      val letterIndex =  ((e.getX() - DOCK_LETTER_MARGIN) / (LETTER_SIZE * DOCK_SCALE)).toInt
+      val scaledLetterWidth = (LETTER_SIZE + DOCK_LETTER_MARGIN) * DOCK_SCALE
+      val letterIndex =  ((e.getX() - DOCK_LETTER_MARGIN) / scaledLetterWidth).toInt
       currentLetter = Letter(Letter.letters.keys.toList(letterIndex))
     }
   }
