@@ -128,7 +128,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     p.fill(40)
     p.rect(0, 2, p.width, 100)
     p.translate(10, 5)
-    p.scale(0.5f)
+    p.scale(0.3f)
     for ((c, letter) <- Letter.letters) {
       drawLetterLabel(c)
       drawLetter(letter)
@@ -153,8 +153,8 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     p.fill(255)
     p.textAlign(CENTER)
     p.pushMatrix
-    p.translate(30, 130)
-    p.scale(2)
+    p.translate(30, 140)
+    p.scale(3)
     p.text(c, 0, 0)
     p.popMatrix
   }
