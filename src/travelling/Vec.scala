@@ -28,7 +28,7 @@ object Vec {
   def lineLength(x0: Float, y0: Float, x1: Float, y1: Float) = {
     val x = pow(abs(x0 - x1), 2);
     val y = pow(abs(y0 - y1), 2);
-    Math.sqrt(x + y).toFloat
+    sqrt(x + y).toFloat
   }
 
   def linePoint(t: Float, x0: Float, y0: Float, x1: Float, y1: Float) = {
