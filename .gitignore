@@ -12,3 +12,9 @@ Thumbs.db
 # IntelliJ project files
 *.i[mpw][lrs]
 .idea
+
+# Eclipse project files
+bin
+.project
+.classpath
+.scala_dependencies

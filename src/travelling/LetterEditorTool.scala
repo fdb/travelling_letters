@@ -32,6 +32,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     drawLetterBlock
     drawCurrentLetter
     drawHandles
+    drawClosestSegment
     p.popMatrix
 
     drawLetterDock
@@ -98,7 +99,26 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     p.vertex(v.x - HANDLE_SIZE, v.y + HANDLE_SIZE)
   }
 
+  def drawClosestSegment() {
+    val mousePoint = Vec(p.mouseX, p.mouseY) - offset
+    val hi = handleIndex(mousePoint)
+    if (hi >= 0) {
+    	p.fill(255, 0, 0)
+    	p.noStroke
+    	val pt = currentLetter.shape.points(hi)
+    	p.rect(pt.x - HANDLE_SIZE, pt.y-HANDLE_SIZE, HANDLE_SIZE * 2, HANDLE_SIZE * 2)
+    } else {
+    	val segmentIndex = currentLetter.shape.segmentForPoint(mousePoint)
+    	if (segmentIndex < 0) return
+    	p.noFill
+    	p.stroke(255, 0, 0)
+    	val (a,b) = currentLetter.shape.segments(segmentIndex)
+    	p.line(a.x, a.y, b.x, b.y)
+    }
+  }
+
   def drawLetterDock() {
+    p.noStroke
     p.pushMatrix
     p.translate(0, 500)
     p.fill(20)
@@ -107,7 +127,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     p.rect(0, 1, p.width, 1)
     p.fill(40)
     p.rect(0, 2, p.width, 100)
-    p.translate(10, 10)
+    p.translate(10, 5)
     p.scale(0.5f)
     for ((c, letter) <- Letter.letters) {
       drawLetterLabel(c)
@@ -132,7 +152,11 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
   def drawLetterLabel(c: String) {
     p.fill(255)
     p.textAlign(CENTER)
-    p.text(c, 30, 120)
+    p.pushMatrix
+    p.translate(30, 130)
+    p.scale(2)
+    p.text(c, 0, 0)
+    p.popMatrix
   }
 
   def handleRect(v: Vec) = new Rect(v.x - HANDLE_SIZE, v.y - HANDLE_SIZE, HANDLE_SIZE * 2, HANDLE_SIZE * 2)
@@ -149,7 +173,9 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
         if (draggingIndex >= 0) {
           currentLetter.removePoint(draggingIndex)
         } else {
-          //currentLetter.insertPoint()
+        	val segmentIndex = currentLetter.shape.segmentForPoint(mouseVec)
+        	if (segmentIndex >= 0) 
+        		currentLetter.splitSegment(segmentIndex)
         }
       }
     } else {

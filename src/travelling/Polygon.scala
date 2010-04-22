@@ -1,8 +1,6 @@
 package travelling
 
-import scala.math.ceil
-import scala.math.pow
-import scala.math.abs
+import scala.math.{ceil,sqrt,pow,abs}
 
 object Polygon {
   def lineLength(x0: Float, y0: Float, x1: Float, y1: Float) = {
@@ -15,6 +13,21 @@ object Polygon {
     Vec(
       x0 + t * (x1 - x0),
       y0 + t * (y1 - y0))
+  }
+
+  def shortestDistance(a: Vec, b: Vec, pt: Vec) = {
+    // Calculate vector a/b
+    val t = b - a
+    // Length of line segment a/b
+    val length = sqrt(pow(t.x,2)+pow(t.y,2)).toFloat
+    // Unit vector of ab
+    val uv = t / length
+    // Normal unit vector ab
+    val normal = Vec(-uv.y, uv.x)
+    // Vector ac
+    val ac = pt - a
+    // Projection of ac to n (the minimum distance)
+    abs(ac.x * normal.x + ac.y * normal.y)
   }
 }
 
@@ -68,6 +81,20 @@ class Polygon(val points: Seq[Vec]) {
     } else {
       points(points.size)
     }
+  }
+
+  def segments = {
+    for (i <- 1 until points.size)
+      yield (points(i-1), points(i))
+  }
+
+  def segmentForPoint(pt: Vec, threshold: Float = 5) : Int = {
+    var i = 0
+    for (segment <- segments) {
+      if (Polygon.shortestDistance(segment._1, segment._2, pt) < threshold) return i
+      i += 1
+    }
+    return -1
   }
 
   def length() = {
