@@ -4,11 +4,14 @@ class AttractToTarget(override val system: ParticleSystem) extends Behavior(syst
   var weight = 1.0f
 
   override def apply(p: Particle, dt: Float) {
-    val distanceSquared = p.pos.distanceSquared(p.target)
-    var tmp = p.target - p.pos
-    tmp = tmp.normalize
-    tmp = tmp * weight
+//    val distanceSquared = p.pos.distanceSquared(p.target)
+//    var tmp = p.target - p.pos
+//    tmp = tmp.normalize
+//    tmp = tmp * weight
+//    
+//    p.steer = p.steer + tmp
     
-    p.steer = p.steer + tmp
+    val mid = (p.target - p.pos) / 5
+    p.pos += mid
   }
 }

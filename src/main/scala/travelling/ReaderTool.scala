@@ -9,7 +9,7 @@ import scala.collection.mutable.Map
  * Allows you to read a text by morphing the letters.
  */
 class ReaderTool(override val p: ToolContainer) extends Tool(p) {
-  val text = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed nisi non metus viverra tincidunt quis nec elit. Pellentesque non lorem elit, ac pretium nulla. Integer facilisis, sapien sed sollicitudin rhoncus, nisi ipsum congue arcu, vitae fermentum eros neque at mi. Donec in nunc leo. Ut consectetur tempus metus, non ullamcorper purus scelerisque in. Curabitur quis ante ipsum. Integer ac diam vel magna dictum aliquet. Vivamus vestibulum sollicitudin hendrerit. Nunc erat dui, tristique sit amet ultricies tempus, volutpat ac justo. In tempus sapien nec eros lacinia blandit. Aenean luctus erat at velit convallis pellentesque. Donec id turpis nulla, id placerat nunc. Nulla aliquet, nisi ut scelerisque suscipit, erat arcu sollicitudin sapien, varius egestas lacus elit at elit. Phasellus sit amet fermentum ipsum. Suspendisse potenti. Quisque imperdiet commodo ante, in sagittis nibh sagittis in. Phasellus tellus nisl, imperdiet ut luctus id, accumsan a eros."""
+  val text = """The Quick Brown Fox Jumps Over The Lazy Dog."""
   val initials = """ABCDEFGHIJKLMNOPQRSTUVWXYZ"""
   val players = Map[String, LetterFlock]()
   val system = new ParticleSystem(800, 600)
@@ -65,7 +65,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   }
   
   def advanceOffset {
-	  offset += Vec(60, 0)
+	  offset += Vec(70, 0)
     	if (offset.x > 1600) {
     		offset = Vec(50, offset.y + 120)
     	}
