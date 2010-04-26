@@ -9,7 +9,7 @@ class Particle(val flock: Flock) {
 	var steer = Vec()
 	var steerMax = 1f
 	var age = 0f
-	var velocityMax = 180f + (random.toFloat * 10f)
+	var velocityMax = 380f + (random.toFloat * 10f)
   var target = Vec()
 	//var lifeTime = 10 * 1000f
 

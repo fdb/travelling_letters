@@ -38,6 +38,7 @@ object Letters extends ToolContainer {
 
   val VIEWER_TOOL = new ViewerTool(this)
   val READER_TOOL = new ReaderTool(this)
+  val TYPE_TOOL = new TypeTool(this)
   val LETTER_EDITOR_TOOL = new LetterEditorTool(this)
   tool = VIEWER_TOOL
 
@@ -48,6 +49,7 @@ object Letters extends ToolContainer {
     textFont(pFont)
     VIEWER_TOOL.setup
     READER_TOOL.setup
+    TYPE_TOOL.setup
     LETTER_EDITOR_TOOL.setup
   }
 
@@ -63,13 +65,16 @@ object Letters extends ToolContainer {
     rect(0, 0, width, 20)
     textAlign(LEFT)
     val oldTool = tool
-    if (appLabel("Main", Rect(5, 0, 50, 20))) {
+    if (appLabel("View", Rect(5, 0, 50, 20))) {
       tool = VIEWER_TOOL
     }
-    if (appLabel("Reader", Rect(55, 0, 50, 20))) {
+    if (appLabel("Read", Rect(55, 0, 50, 20))) {
       tool = READER_TOOL
     }
-    if (appLabel("Editor", Rect(105, 0, 50, 20))) {
+    if (appLabel("Type", Rect(105, 0, 50, 20))) {
+      tool = TYPE_TOOL
+    }
+    if (appLabel("Edit", Rect(155, 0, 50, 20))) {
       tool = LETTER_EDITOR_TOOL
     }
     drawVersionNumber
