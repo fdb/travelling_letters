@@ -53,7 +53,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   def advanceCursor = {
 	  cursorCountdown -= 1
 	  if (cursorCountdown <= 0) {
-	 	  cursorCountdown = 100
+	 	  cursorCountdown = 30
 	 	  cursor += 1
 	 	  if (cursor >= text.length) {
 	 	 	  cursor = 0
