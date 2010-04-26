@@ -5,7 +5,7 @@
     <property name="build.dir" location="build"/>
     <property name="dist.dir" location="dist"/>
     <property name="lib.dir" location="lib"/>
-    <property name="src.dir" location="src"/>
+    <property name="src.main.dir" location="src/main/scala"/>
     <path id="build.classpath">
         <fileset dir="${lib.dir}">
             <include name="*.jar"/>
@@ -34,7 +34,7 @@
     </target>
 
     <target name="compile" depends="init">
-        <scalac srcdir="${src.dir}"
+        <scalac srcdir="${src.main.dir}"
                 destdir="${build.dir}"
                 classpathref="build.classpath"
                 deprecation="on">

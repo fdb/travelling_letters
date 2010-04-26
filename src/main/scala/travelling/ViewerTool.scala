@@ -5,11 +5,10 @@ import scala.math.random
 
 import processing.core._
 import PConstants._
-import java.awt.event.KeyEvent
+import java.awt.event.{KeyEvent, MouseEvent}
 
 
 class ViewerTool(override val p: ToolContainer) extends Tool(p) {
-  Letter.parse
 
   val system = new ParticleSystem(800, 600)
   val attractorBehavior = new AttractToTarget(system)
@@ -31,10 +30,6 @@ class ViewerTool(override val p: ToolContainer) extends Tool(p) {
       updateParticlesTarget(f.asInstanceOf[LetterFlock], o)
       o += Vec(100, 0)
     })
-
-    if (p.mouseDown) {
-      system.flocks.foreach(shuffleParticles)
-    }
 
     p.background(51)
     p.fill(255)
@@ -102,6 +97,10 @@ class ViewerTool(override val p: ToolContainer) extends Tool(p) {
       val part = flock.particles(i)
       part.target = letter.shape.points(i) + Vec(p.mouseX, p.mouseY) + offset
     }
+  }
+  
+  override def mouseReleased(e: MouseEvent) {
+      system.flocks.foreach(shuffleParticles)
   }
 
   def shuffleParticles(flock: Flock) {

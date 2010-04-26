@@ -34,7 +34,10 @@ object Letters extends ToolContainer {
 	  destination.close
   }
 
+  Letter.parse
+
   val VIEWER_TOOL = new ViewerTool(this)
+  val READER_TOOL = new ReaderTool(this)
   val LETTER_EDITOR_TOOL = new LetterEditorTool(this)
   tool = VIEWER_TOOL
 
@@ -43,7 +46,9 @@ object Letters extends ToolContainer {
     smooth
     val pFont = createFont("Lucida Grande", 11)
     textFont(pFont)
-    super.setup
+    VIEWER_TOOL.setup
+    READER_TOOL.setup
+    LETTER_EDITOR_TOOL.setup
   }
 
   override def draw {
@@ -58,10 +63,13 @@ object Letters extends ToolContainer {
     rect(0, 0, width, 20)
     textAlign(LEFT)
     val oldTool = tool
-    if (appLabel("Main", Rect(5, 0, 100, 20))) {
+    if (appLabel("Main", Rect(5, 0, 50, 20))) {
       tool = VIEWER_TOOL
     }
-    if (appLabel("Editor", Rect(55, 0, 100, 20))) {
+    if (appLabel("Reader", Rect(55, 0, 50, 20))) {
+      tool = READER_TOOL
+    }
+    if (appLabel("Editor", Rect(105, 0, 50, 20))) {
       tool = LETTER_EDITOR_TOOL
     }
     drawVersionNumber
