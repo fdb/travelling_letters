@@ -53,7 +53,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   def advanceCursor = {
 	  cursorCountdown -= 1
 	  if (cursorCountdown <= 0) {
-	 	  cursorCountdown = 30
+	 	  cursorCountdown = 10
 	 	  cursor += 1
 	 	  if (cursor >= text.length) {
 	 	 	  cursor = 0
@@ -69,14 +69,16 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     	if (offset.x > 1600) {
     		offset = Vec(50, offset.y + 120)
     	}
-	   if (offset.y > 1200) {
+	   if (offset.y > 1100) {
 	  	   offset = Vec(50, 50)
 	   }
   }
 
   def createLetter(character: String, offset: Vec) = {
 	  val letter = Letter(character)
-      val flock = new LetterFlock(system, letter, offset)
+	  val poly = letter.shape // letter.shape.resampledByAmount(100)
+	  val customLetter = new Letter(letter.character, poly)
+      val flock = new LetterFlock(system, customLetter, offset)
       flock.behaviors = List(attractorBehavior, containBehavior)
       system.flocks = system.flocks.toList ::: List(flock)
       flock
