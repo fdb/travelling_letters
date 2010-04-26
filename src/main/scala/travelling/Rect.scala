@@ -11,5 +11,5 @@ class Rect(val x: Float, val y: Float, val width: Float, val height: Float) {
 }
 
 object Rect {
-  def apply(x:Float, y:Float, width:Float, height:Float) = new Rect(x, y, width, height)
+  def apply(x: Float, y: Float, width: Float, height: Float) = new Rect(x, y, width, height)
 }

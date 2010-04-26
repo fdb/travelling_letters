@@ -7,9 +7,10 @@ import scala.collection.JavaConversions._
 
 object Letter {
   val letters: Map[String, Letter] = Map()
-  val DEFAULT_LETTER = new Letter("\0", new Polygon(List(Vec(0,0), Vec(40,0), Vec(40,100), Vec(0,100), Vec(0, 0))))
+  val DEFAULT_LETTER = new Letter("\0", new Polygon(List(Vec(0, 0), Vec(40, 0), Vec(40, 100), Vec(0, 100), Vec(0, 0))))
 
   def exists(character: String) = letters.contains(character)
+
   def apply(character: String) = letters.getOrElse(character, DEFAULT_LETTER)
 
   def parse() {
@@ -69,25 +70,25 @@ class Letter(val character: String, var shape: Polygon) {
     for (i <- 0 until shape.points.size) {
       var point = shape.points(i)
       if (i != index)
-      newPoints = newPoints ::: List(point)
+        newPoints = newPoints ::: List(point)
     }
     shape = new Polygon(newPoints)
   }
-  
+
   def splitSegment(index: Int) {
     var newPoints: List[Vec] = List()
     for (i <- 0 until shape.points.size) {
       val point = shape.points(i)
       if (i == index) {
-    	val nextPoint = shape.points(i + 1)
-    	val middlePoint = Vec.linePoint(0.5f, point.x, point.y, nextPoint.x, nextPoint.y)
-    	newPoints = newPoints ::: List(point)
-    	newPoints = newPoints ::: List(middlePoint)
+        val nextPoint = shape.points(i + 1)
+        val middlePoint = Vec.linePoint(0.5f, point.x, point.y, nextPoint.x, nextPoint.y)
+        newPoints = newPoints ::: List(point)
+        newPoints = newPoints ::: List(middlePoint)
       } else {
-    	newPoints = newPoints ::: List(point)
+        newPoints = newPoints ::: List(point)
       }
     }
-    shape = new Polygon(newPoints)    	
+    shape = new Polygon(newPoints)
   }
 
   def translate(offset: Vec) {
@@ -102,7 +103,7 @@ class Letter(val character: String, var shape: Polygon) {
     val pointLetters = shape.points.map(p => "%.0f,%.0f".format(p.x, p.y))
     pointLetters.mkString(" ")
   }
-  
+
   override def toString = character
 
 }

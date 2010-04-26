@@ -10,28 +10,27 @@ import java.awt.event.KeyEvent
  * Main application.
  */
 object Letters extends ToolContainer {
-
   val version: String = {
     val properties = new Properties
     properties.load(new FileInputStream("version.properties"))
     properties.getProperty("app.version")
   }
-  
+
   val lettersFile: File = {
     val homeDirectory = new File(System.getProperty("user.home"))
-	new File(homeDirectory, "Library/Application Support/Travelling Letters/letters.txt")
+    new File(homeDirectory, "Library/Application Support/Travelling Letters/letters.txt")
   }
 
-  if (! lettersFile.exists) {
-	  // Copy letters template from the application.
-	  lettersFile.getParentFile.mkdirs
-	  val sourceFile = new File("letters.txt")
-	  lettersFile.createNewFile
-	  val source = new FileInputStream(sourceFile).getChannel
-	  val destination = new FileOutputStream(lettersFile).getChannel
-	  destination.transferFrom(source, 0, source.size)
-	  source.close
-	  destination.close
+  if (!lettersFile.exists) {
+    // Copy letters template from the application.
+    lettersFile.getParentFile.mkdirs
+    val sourceFile = new File("letters.txt")
+    lettersFile.createNewFile
+    val source = new FileInputStream(sourceFile).getChannel
+    val destination = new FileOutputStream(lettersFile).getChannel
+    destination.transferFrom(source, 0, source.size)
+    source.close
+    destination.close
   }
 
   Letter.parse

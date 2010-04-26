@@ -7,13 +7,12 @@ import java.awt.event.{KeyEvent, MouseEvent}
  * A tool provides methods
  */
 
-abstract class Tool(val p:ToolContainer) {
-
+abstract class Tool(val p: ToolContainer) {
   def setup() {}
 
   def draw()
-  
-  def name() : String
+
+  def name(): String
 
   def mousePressed(e: MouseEvent) {}
 
@@ -26,5 +25,5 @@ abstract class Tool(val p:ToolContainer) {
   def toolActivated() {}
 
   def toolDeactivated() {}
-  
+
 }

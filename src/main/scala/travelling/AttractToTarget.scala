@@ -8,7 +8,7 @@ class AttractToTarget(override val system: ParticleSystem) extends Behavior(syst
     var tmp = p.target - p.pos
     tmp = tmp.normalize
     tmp = tmp * weight
-    
+
     p.steer = p.steer + tmp
   }
 }

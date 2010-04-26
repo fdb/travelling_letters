@@ -1,6 +1,6 @@
 package travelling
 
-import scala.math.{ceil,sqrt,pow,abs}
+import scala.math.{ceil, sqrt, pow, abs}
 
 class Polygon(val points: Seq[Vec]) {
   var segmentLengths: List[Float] = null
@@ -56,10 +56,10 @@ class Polygon(val points: Seq[Vec]) {
 
   def segments = {
     for (i <- 1 until points.size)
-      yield (points(i-1), points(i))
+    yield (points(i - 1), points(i))
   }
 
-  def segmentForPoint(pt: Vec, threshold: Float = 3) : Int = {
+  def segmentForPoint(pt: Vec, threshold: Float = 3): Int = {
     var i = 0
     for (segment <- segments) {
       if (Vec.shortestDistance(segment._1, segment._2, pt) < threshold) return i

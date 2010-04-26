@@ -9,7 +9,6 @@ import java.awt.event.{KeyEvent, MouseEvent}
 
 
 class ViewerTool(override val p: ToolContainer) extends Tool(p) {
-
   val system = new ParticleSystem(800, 600)
   val attractorBehavior = new AttractToTarget(system)
   val containBehavior = new Contain(system)
@@ -98,9 +97,9 @@ class ViewerTool(override val p: ToolContainer) extends Tool(p) {
       part.target = letter.shape.points(i) + Vec(p.mouseX, p.mouseY) + offset
     }
   }
-  
+
   override def mouseReleased(e: MouseEvent) {
-      system.flocks.foreach(shuffleParticles)
+    system.flocks.foreach(shuffleParticles)
   }
 
   def shuffleParticles(flock: Flock) {

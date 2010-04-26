@@ -101,17 +101,17 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     val mousePoint = Vec(p.mouseX, p.mouseY) - offset
     val hi = handleIndex(mousePoint)
     if (hi >= 0) {
-    	p.fill(255, 0, 0)
-    	p.noStroke
-    	val pt = currentLetter.shape.points(hi)
-    	p.rect(pt.x - HANDLE_SIZE, pt.y-HANDLE_SIZE, HANDLE_SIZE * 2, HANDLE_SIZE * 2)
+      p.fill(255, 0, 0)
+      p.noStroke
+      val pt = currentLetter.shape.points(hi)
+      p.rect(pt.x - HANDLE_SIZE, pt.y - HANDLE_SIZE, HANDLE_SIZE * 2, HANDLE_SIZE * 2)
     } else {
-    	val segmentIndex = currentLetter.shape.segmentForPoint(mousePoint)
-    	if (segmentIndex < 0) return
-    	p.noFill
-    	p.stroke(255, 0, 0)
-    	val (a,b) = currentLetter.shape.segments(segmentIndex)
-    	p.line(a.x, a.y, b.x, b.y)
+      val segmentIndex = currentLetter.shape.segmentForPoint(mousePoint)
+      if (segmentIndex < 0) return
+      p.noFill
+      p.stroke(255, 0, 0)
+      val (a, b) = currentLetter.shape.segments(segmentIndex)
+      p.line(a.x, a.y, b.x, b.y)
     }
   }
 
@@ -137,7 +137,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
 
   def drawHelp() {
     p.pushMatrix
-    p.translate(p.width-210, 30)
+    p.translate(p.width - 210, 30)
     p.fill(0, 100)
     p.noStroke
     p.rect(0, 0, 200, 40)
@@ -171,14 +171,14 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
         if (draggingIndex >= 0) {
           currentLetter.removePoint(draggingIndex)
         } else {
-        	val segmentIndex = currentLetter.shape.segmentForPoint(mouseVec)
-        	if (segmentIndex >= 0) 
-        		currentLetter.splitSegment(segmentIndex)
+          val segmentIndex = currentLetter.shape.segmentForPoint(mouseVec)
+          if (segmentIndex >= 0)
+            currentLetter.splitSegment(segmentIndex)
         }
       }
     } else {
       val scaledLetterWidth = (LETTER_SIZE + DOCK_LETTER_MARGIN) * DOCK_SCALE
-      val letterIndex =  ((e.getX() - DOCK_LETTER_MARGIN) / scaledLetterWidth).toInt
+      val letterIndex = ((e.getX() - DOCK_LETTER_MARGIN) / scaledLetterWidth).toInt
       currentLetter = Letter(Letter.letters.keys.toList(letterIndex))
     }
   }

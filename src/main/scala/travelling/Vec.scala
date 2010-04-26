@@ -1,6 +1,6 @@
 package travelling
 
-import scala.math.{sqrt,random,abs,pow}
+import scala.math.{sqrt, random, abs, pow}
 
 object Vec {
   val ZERO = new Vec
@@ -23,7 +23,7 @@ object Vec {
   }
 
   def random(xRange: Float, yRange: Float) = new Vec(scala.math.random.toFloat * xRange, scala.math.random.toFloat * yRange)
-  
+
 
   def lineLength(x0: Float, y0: Float, x1: Float, y1: Float) = {
     val x = pow(abs(x0 - x1), 2);
@@ -36,16 +36,16 @@ object Vec {
       x0 + t * (x1 - x0),
       y0 + t * (y1 - y0))
   }
-    
+
   def distance(a: Vec, b: Vec) = {
     val t = b - a
-    sqrt(pow(t.x,2)+pow(t.y,2)).toFloat
+    sqrt(pow(t.x, 2) + pow(t.y, 2)).toFloat
   }
-    
+
   def dot(a: Vec, b: Vec) = {
-    a.x  * b.x + a.y * b.y
+    a.x * b.x + a.y * b.y
   }
-  
+
   def shortestDistance(a: Vec, b: Vec, pt: Vec) = {
     // Minimum distance between line segment ab and point pt
     // Calculate vector a/b
@@ -54,7 +54,7 @@ object Vec {
     val lengthSquared = pow(t.x, 2) + pow(t.y, 2)
     // If a == b, return the distance from endpoint
     if (lengthSquared == 0f) {
-  	  Vec.distance(a, pt)
+      Vec.distance(a, pt)
     } else {
       // Line extending the segment, a + t (b - a)
       val tmp = (dot(pt - a, t) / lengthSquared).toFloat
@@ -62,12 +62,12 @@ object Vec {
         // Extending beyond a
         distance(pt, a)
       } else if (tmp > 1) {
-    	  // Extending beyond b
-    	  distance(pt, b)
+        // Extending beyond b
+        distance(pt, b)
       } else {
         // Project onto the line
-    	val projection = a + t * tmp
-    	distance(pt, projection)
+        val projection = a + t * tmp
+        distance(pt, projection)
       }
     }
   }
@@ -109,14 +109,14 @@ class Vec(val x: Float, val y: Float) {
   }
 
   final def clamp(max: Float): Vec = {
-//    val l = length
-//		if(l > max) {
-//		  var v = this / l
-//		  v *= max
-//      v
-//		} else {
-//		this
-//  }
+    //    val l = length
+    //		if(l > max) {
+    //		  var v = this / l
+    //		  v *= max
+    //      v
+    //		} else {
+    //		this
+    //  }
 
     val absX = abs(x)
     val absY = abs(y)

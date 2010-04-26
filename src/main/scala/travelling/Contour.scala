@@ -1,5 +1,4 @@
 package travelling
 
 class Contour() {
-
 }
