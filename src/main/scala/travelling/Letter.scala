@@ -18,8 +18,9 @@ object Letter {
       letters.clear
       val properties = new Properties
       properties.load(new FileInputStream(Letters.lettersFile))
-      for (character <- properties.keys()) {
-        val s = properties.get(character.toString)
+      for (entity <- properties.keys()) {
+        val character = Entities.unEscape(entity.toString)
+        val s = properties.get(entity.toString)
         val letter = parse(character.toString, s.toString)
         letters.put(character.toString, letter)
       }
@@ -42,8 +43,9 @@ object Letter {
     try {
       val properties = new Properties
       for ((c, letter) <- letters) {
+        val entity = Entities.escape(letter.character(0))
         val s = letter.toPropertiesString
-        properties.put(letter.character, s)
+        properties.put(entity, s)
       }
       properties.store(new FileOutputStream(Letters.lettersFile), "")
     } catch {

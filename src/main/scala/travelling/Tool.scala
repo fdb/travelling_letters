@@ -22,7 +22,12 @@ abstract class Tool(val p: ToolContainer) {
 
   def keyPressed(e: KeyEvent) {}
 
-  def toolActivated() {}
+  def toolActivated() {
+    p.resetMatrix
+    p.fill(255)
+    p.noStroke
+    p.strokeWeight(1)
+  }
 
   def toolDeactivated() {}
 

@@ -20,7 +20,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   |vehicles, either as private or public transport. Travel may be local, regional, national (domestic) or international.
   |In some countries, non-local internal travel may require an internal passport, while international travel typically
   |requires a passport and visa. """.stripMargin
-  val initials = """ABCDEFGHIJKLMNOPQRSTUVWXYZ"""
+  val initials = """ABCDEFGHIJKLMNOPQRSTUVWXYZ,/.?()abcdefghijklmnopqrstuvwxyz"""
   val players = Map[String, LetterFlock]()
   val system = new ParticleSystem(800, 600)
   val containBehavior = new Contain(system)
@@ -34,14 +34,15 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
 
   override def setup() {
     for (c <- initials) {
-      players.put(c.toString, createLetter(c.toString, Vec()))
+      players.put(c.toString, createLetterFlock(c.toString, Vec()))
     }
   }
 
   override def draw() {
     system.update(0.1f)
 
-    p.fill(60, 30)
+    //p.background(60)
+    p.fill(60, 200)
     p.rect(0, 0, p.width, p.height)
     p.noFill
     p.stroke(255)
@@ -53,10 +54,10 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     p.popMatrix
 
     if (advanceCursor) {
-      val cursorChar = text(cursor).toString.toUpperCase
+      val cursorChar = text(cursor).toString
       if (players.contains(cursorChar)) {
-        val letter = players(cursorChar)
-        targetFlock(letter, offset)
+        val letterFlock = players(cursorChar)
+        targetFlock(letterFlock, offset)
       }
       advanceOffset
     }
@@ -65,7 +66,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   def advanceCursor = {
     cursorCountdown -= 1
     if (cursorCountdown <= 0) {
-      cursorCountdown = 10
+      cursorCountdown = 15
       cursor += 1
       if (cursor >= text.length) {
         cursor = 0
@@ -86,11 +87,15 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     }
   }
 
-  def createLetter(character: String, offset: Vec) = {
+  def createLetterShape(character: String) = {
     val letter = Letter(character)
-    val poly = letter.shape // letter.shape.resampledByAmount(100)
-    val customLetter = new Letter(letter.character, poly)
-    val flock = new LetterFlock(system, customLetter, offset)
+    letter.shape // .resampledByAmount(20)
+  }
+
+  def createLetterFlock(character: String, offset: Vec) = {
+    val shape = createLetterShape(character)
+    val letter = new Letter(character, shape)
+    val flock = new LetterFlock(system, letter, offset)
     flock.behaviors = List(attractorBehavior, containBehavior)
     system.flocks = system.flocks.toList ::: List(flock)
     flock

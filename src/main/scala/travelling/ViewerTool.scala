@@ -49,6 +49,7 @@ class ViewerTool(override val p: ToolContainer) extends Tool(p) {
 
 
   override def toolActivated() {
+    super.toolActivated
     resetText
   }
 

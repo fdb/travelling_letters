@@ -14,7 +14,7 @@ class TypeTool(override val p: ToolContainer) extends Tool(p) {
   val system = new ParticleSystem(800, 600)
   val containBehavior = new Contain(system)
   containBehavior.max = Vec(1600, 1200)
-  val attractorBehavior = new AttractToTarget(system)
+  val attractorBehavior = new FastAttract(system)
   var cursor = false
   var cursorCountdown = 0
   var offset = Vec(50, 50)
