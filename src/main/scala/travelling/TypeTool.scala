@@ -9,7 +9,7 @@ import scala.collection.mutable.Map
  * Type your own text and see the letters move.
  */
 class TypeTool(override val p: ToolContainer) extends Tool(p) {
-  val initials = """ABCDEFGHIJKLMNOPQRSTUVWXYZ"""
+  val initials = """ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890,./?;:"'<>|"""
   val players = Map[String, LetterFlock]()
   val system = new ParticleSystem(800, 600)
   val containBehavior = new Contain(system)
@@ -34,12 +34,13 @@ class TypeTool(override val p: ToolContainer) extends Tool(p) {
     p.background(90)
     p.noFill
     p.stroke(255)
+    p.strokeWeight(3f)
 
     p.pushMatrix
     p.scale(0.5f)
     system.flocks.foreach(drawFlock)
     if (cursor) {
-      p.fill(70)
+      p.fill(150)
       p.noStroke()
       p.rect(offset.x, offset.y, 1, 100)
     }
@@ -54,8 +55,8 @@ class TypeTool(override val p: ToolContainer) extends Tool(p) {
     }
   }
 
-  override def keyPressed(e: KeyEvent) {
-    val cursorChar = e.getKeyChar.toString.toUpperCase
+  override def keyTyped(e: KeyEvent) {
+    val cursorChar = e.getKeyChar.toString
     if (players.contains(cursorChar)) {
       val letter = players(cursorChar)
       targetFlock(letter, offset)
@@ -75,7 +76,7 @@ class TypeTool(override val p: ToolContainer) extends Tool(p) {
 
   def createLetter(character: String, offset: Vec) = {
     val letter = Letter(character)
-    val poly = letter.shape.resampledByAmount(100)
+    val poly = letter.shape
     val customLetter = new Letter(letter.character, poly)
     val flock = new LetterFlock(system, customLetter, offset)
     flock.behaviors = List(attractorBehavior, containBehavior)
