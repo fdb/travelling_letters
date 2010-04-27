@@ -3,6 +3,7 @@ package travelling
 import processing.core._
 import PConstants._
 import java.awt.event.{KeyEvent, MouseEvent}
+import scala.collection.mutable.Map
 
 /**
  * Small app to draw letters
@@ -13,6 +14,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
   val LETTER_SIZE = 100f
   val DOCK_SCALE = 0.3f
   val DOCK_LETTER_MARGIN = 10
+  val dockPositions: Map[Letter, Rect] = Map()
 
   Letter.parse
   val offset = Vec(100, 100)
@@ -130,6 +132,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     for ((c, letter) <- Letter.letters) {
       drawLetterLabel(c)
       drawLetter(letter)
+      dockPositions.put(letter, Rect(p.screenX(0, 0), p.screenY(0, 0), 30, 50))
       p.translate(LETTER_SIZE + DOCK_LETTER_MARGIN, 0)
     }
     p.popMatrix
@@ -177,9 +180,11 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
         }
       }
     } else {
-      val scaledLetterWidth = (LETTER_SIZE + DOCK_LETTER_MARGIN) * DOCK_SCALE
-      val letterIndex = ((e.getX() - DOCK_LETTER_MARGIN) / scaledLetterWidth).toInt
-      currentLetter = Letter(Letter.letters.keys.toList(letterIndex))
+      val mouseVec = Vec(e.getX(), e.getY())
+      val clickedLetters = dockPositions.filter(item => item._2.intersects(mouseVec))
+      if (!clickedLetters.isEmpty) {
+        currentLetter = clickedLetters.keys.head
+      }
     }
   }
 
