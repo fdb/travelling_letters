@@ -20,7 +20,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   |vehicles, either as private or public transport. Travel may be local, regional, national (domestic) or international.
   |In some countries, non-local internal travel may require an internal passport, while international travel typically
   |requires a passport and visa. """.stripMargin
-  val initials = """ABCDEFGHIJKLMNOPQRSTUVWXYZ,/.?()abcdefghijklmnopqrstuvwxyz"""
+  val initials = """ABCDEFGHIJKLMNOPQRSTUVWXYZ,/.?()"""
   val players = Map[String, LetterFlock]()
   val system = new ParticleSystem(800, 600)
   val containBehavior = new Contain(system)
@@ -55,8 +55,10 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
 
     if (advanceCursor) {
       val cursorChar = text(cursor).toString
-      if (players.contains(cursorChar)) {
-        val letterFlock = players(cursorChar)
+      val upperCaseChar = cursorChar.toUpperCase
+      if (players.contains(upperCaseChar)) {
+        val letterFlock = players(upperCaseChar)
+        letterFlock.letter.shape = createLetterShape(cursorChar)
         targetFlock(letterFlock, offset)
       }
       advanceOffset
@@ -89,7 +91,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
 
   def createLetterShape(character: String) = {
     val letter = Letter(character)
-    letter.shape // .resampledByAmount(20)
+    letter.shape.resampledByAmount(20)
   }
 
   def createLetterFlock(character: String, offset: Vec) = {
