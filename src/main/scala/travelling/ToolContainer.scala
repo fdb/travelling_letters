@@ -29,6 +29,7 @@ class ToolContainer() extends PApplet {
 
   override def keyPressed(e: KeyEvent) {tool.keyPressed(e)}
 
+  override def keyTyped(e: KeyEvent) {tool.keyTyped(e)}
 
 }
 

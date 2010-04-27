@@ -9,16 +9,19 @@ import scala.collection.mutable.Map
  * Small app to draw letters
  */
 class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
-  val HANDLE_SIZE = 3
+  val HANDLE_SIZE = 2
   val GRID_SIZE = 10
   val LETTER_SIZE = 100f
   val DOCK_SCALE = 0.3f
-  val DOCK_LETTER_MARGIN = 10
+  val DOCK_HORIZONTAL_MARGIN = 25
+  val DOCK_VERTICAL_MARGIN = 100
+  val DOCK_POSITION = 500
   val dockPositions: Map[Letter, Rect] = Map()
 
   Letter.parse
   val offset = Vec(100, 100)
   var currentLetter: Letter = Letter("L")
+  var sortedKeys = Letter.letters.keys.toList.sorted  
   var draggingIndex: Int = -1
 
   override def name() = "Letter Editor"
@@ -29,6 +32,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
 
     p.pushMatrix
     p.translate(offset.x, offset.y)
+    drawGuides
     drawLetterBlock
     drawCurrentLetter
     drawHandles
@@ -42,6 +46,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
   def reloadLetters {
     Letter.parse
     currentLetter = Letter(currentLetter.character)
+    sortedKeys = Letter.letters.keys.toList.sorted
   }
 
   def drawGrid {
@@ -53,6 +58,12 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     for (x <- 0 until (p.width, GRID_SIZE)) {
       p.line(x, 0, x, p.height)
     }
+  }
+
+  def drawGuides {
+    p.noFill
+    p.stroke(100)
+    p.line(-offset.x, 30, p.width+offset.x, 30)
   }
 
   def drawLetterBlock {
@@ -120,33 +131,49 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
   def drawLetterDock() {
     p.noStroke
     p.pushMatrix
-    p.translate(0, 500)
+    p.translate(DOCK_POSITION, 0)
     p.fill(20)
-    p.rect(0, 0, p.width, 1)
+    p.rect(0, 0, 1, p.height)
     p.fill(30)
-    p.rect(0, 1, p.width, 1)
+    p.rect(1, 0, 1, p.height)
     p.fill(40)
-    p.rect(0, 2, p.width, 100)
-    p.translate(DOCK_LETTER_MARGIN, 5)
+    p.rect(2, 0, p.width-DOCK_POSITION, p.height)
+    p.translate(DOCK_HORIZONTAL_MARGIN, 30)
     p.scale(DOCK_SCALE)
-    for ((c, letter) <- Letter.letters) {
+
+    p.pushMatrix
+    for (c <- sortedKeys) {
+      val letter = Letter(c)
+      if (letter == currentLetter) {
+        p.fill(30, 30, 50)
+        p.stroke(150)
+        p.rect(-20, -20, 140, 170)
+      }
       drawLetterLabel(c)
       drawLetter(letter)
       dockPositions.put(letter, Rect(p.screenX(0, 0), p.screenY(0, 0), 30, 50))
-      p.translate(LETTER_SIZE + DOCK_LETTER_MARGIN, 0)
+      p.translate(LETTER_SIZE + DOCK_HORIZONTAL_MARGIN, 0)
+      if (p.screenX(0, 0) > p.width - DOCK_HORIZONTAL_MARGIN) {
+        p.popMatrix
+        p.translate(0, LETTER_SIZE + DOCK_VERTICAL_MARGIN)
+        p.pushMatrix
+      }
     }
+    p.popMatrix
+
     p.popMatrix
   }
 
   def drawHelp() {
     p.pushMatrix
-    p.translate(p.width - 210, 30)
+    p.translate(DOCK_POSITION - 210, 30)
     p.fill(0, 100)
     p.noStroke
-    p.rect(0, 0, 200, 40)
+    p.rect(0, 0, 200, 60)
     p.fill(255)
     p.textAlign(LEFT)
-    p.text("r: reload", 10, 20)
+    p.text("Current letter: " + currentLetter.character, 10, 20)
+    p.text("r: reload", 10, 40)
     p.popMatrix
   }
 
@@ -167,7 +194,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     (v.y / GRID_SIZE).round * GRID_SIZE)
 
   override def mousePressed(e: MouseEvent) {
-    if (e.getY() < 500) {
+    if (e.getX() < DOCK_POSITION) {
       val mouseVec = Vec(e.getX(), e.getY()) - offset
       draggingIndex = handleIndex(mouseVec)
       if (e.getClickCount == 2) {

@@ -22,6 +22,8 @@ abstract class Tool(val p: ToolContainer) {
 
   def keyPressed(e: KeyEvent) {}
 
+  def keyTyped(e: KeyEvent) {}
+
   def toolActivated() {
     p.resetMatrix
     p.fill(255)
