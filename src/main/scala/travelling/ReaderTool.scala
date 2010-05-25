@@ -29,7 +29,8 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   var cursor = -1
   var cursorCountdown = 0
   var offset = Vec(50, 180)
-  var trails = Map[String, Polygon]()
+  var offsets = Map[String, Vec]()
+  var trailBuffer: PGraphics = null
 
   override def name = "Reader"
 
@@ -37,12 +38,13 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     var shelfOffset = Vec(50, 60)
     for (c <- initials) {
       players.put(c.toString, createLetterFlock(c.toString, shelfOffset))
-      trails.put(c.toString, createLetterTrail(c.toString, shelfOffset))
+      offsets.put(c.toString, shelfOffset)
       shelfOffset += Vec(50, 0)
       if (shelfOffset.x > 1500) {
         shelfOffset = Vec(50, shelfOffset.y + 50)
       }
     }
+    trailBuffer = p.createGraphics(p.width, p.height, JAVA2D)
   }
 
   override def draw() {
@@ -52,33 +54,12 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     p.fill(60, 200)
     p.rect(0, 0, p.width, p.height)
 
+    // Draw trails
+   p.image(trailBuffer.get(), 0, 0)
+
     // Draw shelf
     p.fill(40)
     p.rect(0, 0, p.width, 80)
-
-
-    // Draw all trails.
-    p.noFill
-    p.stroke(255, 40)
-    p.strokeWeight(1f)
-    p.pushMatrix
-    p.scale(0.5f)
-    for (poly <- trails.values) {
-      p.beginShape()
-      val head = poly.points.head + Vec(0, 280)
-      p.vertex(head.x, head.y)
-      var prev = head
-      for (pt <- poly.points.tail) {
-        val dstPt = Vec(pt.x, pt.y + 280)
-        val d = dstPt - prev
-        val mid = prev + d
-        //p.vertex(dstPt.x, dstPt.y)
-        p.bezierVertex(mid.x, mid.y, mid.x, mid.y, pt.x, pt.y)
-        prev = pt
-      }
-      p.endShape()
-    }
-    p.popMatrix
 
     // Drawing style for letters
     p.noFill
@@ -145,10 +126,30 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
       val part = flock.particles(i)
       part.target = letter.shape.points(i) + offset
     }
-    // Update trail
-    val oldPoints = trails(letter.character).points
-    val newPoints = offset - Vec(0, 180) :: oldPoints.toList 
-    trails.put(letter.character, new Polygon(newPoints))
+    val previousOffset = offsets(letter.character)
+    val delta = offset - previousOffset
+    val mid = previousOffset + delta / 2
+    val droop = 30f
+
+    trailBuffer.beginDraw
+    trailBuffer.smooth()
+    trailBuffer.fill(60, 20)
+    trailBuffer.noStroke
+    trailBuffer.rect(0, 0, p.width, p.height)
+    trailBuffer.noFill
+    trailBuffer.stroke(170)
+    trailBuffer.strokeWeight(0.9f)
+    trailBuffer.scale(0.5f)
+    // The offsets start at the top left.
+    // Most letters are 60 wide, so middle = 30.
+    // The baseline is at y=100. 
+    trailBuffer.translate(30, 100)
+    trailBuffer.beginShape
+    trailBuffer.vertex(previousOffset.x, previousOffset.y)
+    trailBuffer.bezierVertex(previousOffset.x, mid.y + droop, offset.x, mid.y + droop, offset.x, offset.y)
+    trailBuffer.endShape
+    trailBuffer.endDraw
+    offsets.put(letter.character, offset)
   }
 
   def drawFlock(flock: Flock) {
