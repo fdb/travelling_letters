@@ -28,22 +28,33 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   val attractorBehavior = new FastAttract(system)
   var cursor = -1
   var cursorCountdown = 0
-  var offset = Vec(50, 50)
+  var offset = Vec(50, 180)
 
   override def name = "Reader"
 
   override def setup() {
+    var shelfOffset = Vec(50, 60)
     for (c <- initials) {
-      players.put(c.toString, createLetterFlock(c.toString, Vec()))
+      players.put(c.toString, createLetterFlock(c.toString, shelfOffset))
+      shelfOffset += Vec(50, 0)
+      if (shelfOffset.x > 1500) {
+        shelfOffset = Vec(50, shelfOffset.y + 50)
+      }
     }
   }
 
   override def draw() {
     system.update(0.1f)
 
-    //p.background(60)
+    // Draw background
     p.fill(60, 200)
     p.rect(0, 0, p.width, p.height)
+
+    // Draw shelf
+    p.fill(40)
+    p.rect(0, 0, p.width, 80)
+
+    // Drawing style for letters
     p.noFill
     p.stroke(255)
     p.strokeWeight(5f)
@@ -84,7 +95,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
       offset = Vec(50, offset.y + 120)
     }
     if (offset.y > 1100) {
-      offset = Vec(50, 50)
+      offset = Vec(50, 150)
     }
   }
 

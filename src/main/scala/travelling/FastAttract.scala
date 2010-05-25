@@ -7,6 +7,6 @@ class FastAttract(override val system: ParticleSystem) extends Behavior(system) 
 
   override def apply(p: Particle, dt: Float) {
     val mid = (p.target - p.pos) / 5
-    p.pos += mid + Vec(random.toFloat * 5f, random.toFloat * 5f)
+    p.pos += mid // + Vec(random.toFloat * 5f, random.toFloat * 5f)
   }
 }
