@@ -29,14 +29,14 @@ class TypeTool(override val p: ToolContainer) extends Tool(p) {
 
   override def draw() {
     system.update(0.1f)
-    updateCursor
+    updateCursor()
 
     p.background(90)
-    p.noFill
+    p.noFill()
     p.stroke(255)
     p.strokeWeight(3f)
 
-    p.pushMatrix
+    p.pushMatrix()
     p.scale(0.5f)
     system.flocks.foreach(drawFlock)
     if (cursor) {
@@ -44,10 +44,10 @@ class TypeTool(override val p: ToolContainer) extends Tool(p) {
       p.noStroke()
       p.rect(offset.x, offset.y, 1, 100)
     }
-    p.popMatrix
+    p.popMatrix()
   }
 
-  def updateCursor {
+  def updateCursor() {
     cursorCountdown -= 1
     if (cursorCountdown <= 0) {
       cursor = !cursor
@@ -61,10 +61,10 @@ class TypeTool(override val p: ToolContainer) extends Tool(p) {
       val letter = players(cursorChar)
       targetFlock(letter, offset)
     }
-    advanceOffset
+    advanceOffset()
   }
 
-  def advanceOffset {
+  def advanceOffset() {
     offset += Vec(70, 0)
     if (offset.x > 1500) {
       offset = Vec(50, offset.y + 120)
@@ -93,7 +93,7 @@ class TypeTool(override val p: ToolContainer) extends Tool(p) {
   }
 
   def drawFlock(flock: Flock) {
-    p.beginShape
+    p.beginShape()
     for (prt <- flock.particles) {
       p.vertex(prt.pos.x, prt.pos.y)
     }

@@ -62,14 +62,14 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     p.rect(0, 0, p.width, 80)
 
     // Drawing style for letters
-    p.noFill
+    p.noFill()
     p.stroke(255)
     p.strokeWeight(5f)
 
-    p.pushMatrix
+    p.pushMatrix()
     p.scale(0.5f)
     system.flocks.foreach(drawFlock)
-    p.popMatrix
+    p.popMatrix()
 
     if (advanceCursor) {
       val cursorChar = text(cursor).toString
@@ -78,7 +78,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
         //letterFlock.letter.shape = createLetterShape(cursorChar)
         targetFlock(letterFlock, offset)
       }
-      advanceOffset
+      advanceOffset()
     }
   }
 
@@ -96,7 +96,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     }
   }
 
-  def advanceOffset {
+  def advanceOffset() {
     offset += Vec(70, 0)
     if (offset.x > 1500) {
       offset = Vec(50, offset.y + 120)
@@ -131,12 +131,12 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     val mid = previousOffset + delta / 2
     val droop = 30f
 
-    trailBuffer.beginDraw
+    trailBuffer.beginDraw()
     trailBuffer.smooth()
     trailBuffer.fill(60, 20)
-    trailBuffer.noStroke
+    trailBuffer.noStroke()
     trailBuffer.rect(0, 0, p.width, p.height)
-    trailBuffer.noFill
+    trailBuffer.noFill()
     trailBuffer.stroke(170)
     trailBuffer.strokeWeight(0.9f)
     trailBuffer.scale(0.5f)
@@ -144,16 +144,16 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     // Most letters are 60 wide, so middle = 30.
     // The baseline is at y=100. 
     trailBuffer.translate(30, 100)
-    trailBuffer.beginShape
+    trailBuffer.beginShape()
     trailBuffer.vertex(previousOffset.x, previousOffset.y)
     trailBuffer.bezierVertex(previousOffset.x, mid.y + droop, offset.x, mid.y + droop, offset.x, offset.y)
-    trailBuffer.endShape
-    trailBuffer.endDraw
+    trailBuffer.endShape()
+    trailBuffer.endDraw()
     offsets.put(letter.character, offset)
   }
 
   def drawFlock(flock: Flock) {
-    p.beginShape
+    p.beginShape()
     for (prt <- flock.particles) {
       p.vertex(prt.pos.x, prt.pos.y)
     }

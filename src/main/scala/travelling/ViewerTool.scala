@@ -19,7 +19,7 @@ class ViewerTool(override val p: ToolContainer) extends Tool(p) {
 
   override def setup(): Unit = {
     containBehavior.max = Vec(800, 600)
-    p.noStroke
+    p.noStroke()
     for (t <- text) createLetter(t.toString)
   }
 
@@ -35,7 +35,7 @@ class ViewerTool(override val p: ToolContainer) extends Tool(p) {
 
     system.update(0.1f)
 
-    p.noFill
+    p.noFill()
     p.stroke(255)
 
     system.flocks.foreach(drawFlock)
@@ -84,7 +84,7 @@ class ViewerTool(override val p: ToolContainer) extends Tool(p) {
   }
 
   def drawFlock(flock: Flock) {
-    p.beginShape
+    p.beginShape()
     for (prt <- flock.particles) {
       p.vertex(prt.pos.x, prt.pos.y)
     }

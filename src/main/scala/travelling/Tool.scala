@@ -25,9 +25,9 @@ abstract class Tool(val p: ToolContainer) {
   def keyTyped(e: KeyEvent) {}
 
   def toolActivated() {
-    p.resetMatrix
+    p.resetMatrix()
     p.fill(255)
-    p.noStroke
+    p.noStroke()
     p.strokeWeight(1)
   }
 

@@ -28,29 +28,29 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
 
   override def draw {
     p.background(50)
-    drawGrid
+    drawGrid()
 
-    p.pushMatrix
+    p.pushMatrix()
     p.translate(offset.x, offset.y)
-    drawGuides
-    drawLetterBlock
-    drawCurrentLetter
-    drawHandles
-    drawClosestSegment
-    p.popMatrix
+    drawGuides()
+    drawLetterBlock()
+    drawCurrentLetter()
+    drawHandles()
+    drawClosestSegment()
+    p.popMatrix()
 
-    drawLetterDock
-    drawHelp
+    drawLetterDock()
+    drawHelp()
   }
 
-  def reloadLetters {
-    Letter.parse
+  def reloadLetters() {
+    Letter.parse()
     currentLetter = Letter(currentLetter.character)
     sortedKeys = Letter.letters.keys.toList.sorted
   }
 
-  def drawGrid {
-    p.noFill
+  def drawGrid() {
+    p.noFill()
     p.stroke(64)
     for (y <- 0 until (p.height, GRID_SIZE)) {
       p.line(0, y, p.width, y)
@@ -60,31 +60,31 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     }
   }
 
-  def drawGuides {
-    p.noFill
+  def drawGuides() {
+    p.noFill()
     p.stroke(100)
     p.line(-offset.x, 30, p.width+offset.x, 30)
   }
 
-  def drawLetterBlock {
+  def drawLetterBlock() {
     p.stroke(90)
-    p.noFill
+    p.noFill()
     p.rect(0, 0, LETTER_SIZE, LETTER_SIZE)
   }
 
-  def drawCurrentLetter {
+  def drawCurrentLetter() {
     drawLetter(currentLetter, true)
   }
 
   def drawLetter(letter: Letter, numbered: Boolean = false) {
-    p.noFill
+    p.noFill()
     p.stroke(255)
-    p.beginShape
+    p.beginShape()
     for (v <- letter.shape.points)
       p.vertex(v.x, v.y)
     p.endShape()
     if (numbered) {
-      p.noStroke
+      p.noStroke()
       p.fill(255)
       var i = 0
       for (v <- letter.shape.points) {
@@ -94,13 +94,13 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     }
   }
 
-  def drawHandles {
+  def drawHandles() {
     p.fill(0, 0, 180)
-    p.noStroke
+    p.noStroke()
     p.beginShape(QUADS)
     for (v <- currentLetter.shape.points)
       drawHandleQuad(v)
-    p.endShape
+    p.endShape()
   }
 
   def drawHandleQuad(v: Vec) {
@@ -115,13 +115,13 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     val hi = handleIndex(mousePoint)
     if (hi >= 0) {
       p.fill(255, 0, 0)
-      p.noStroke
+      p.noStroke()
       val pt = currentLetter.shape.points(hi)
       p.rect(pt.x - HANDLE_SIZE, pt.y - HANDLE_SIZE, HANDLE_SIZE * 2, HANDLE_SIZE * 2)
     } else {
       val segmentIndex = currentLetter.shape.segmentForPoint(mousePoint)
       if (segmentIndex < 0) return
-      p.noFill
+      p.noFill()
       p.stroke(255, 0, 0)
       val (a, b) = currentLetter.shape.segments(segmentIndex)
       p.line(a.x, a.y, b.x, b.y)
@@ -129,8 +129,8 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
   }
 
   def drawLetterDock() {
-    p.noStroke
-    p.pushMatrix
+    p.noStroke()
+    p.pushMatrix()
     p.translate(DOCK_POSITION, 0)
     p.fill(20)
     p.rect(0, 0, 1, p.height)
@@ -141,7 +141,7 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
     p.translate(DOCK_HORIZONTAL_MARGIN, 30)
     p.scale(DOCK_SCALE)
 
-    p.pushMatrix
+    p.pushMatrix()
     for (c <- sortedKeys) {
       val letter = Letter(c)
       if (letter == currentLetter) {
@@ -154,37 +154,37 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
       dockPositions.put(letter, Rect(p.screenX(0, 0), p.screenY(0, 0), 30, 50))
       p.translate(LETTER_SIZE + DOCK_HORIZONTAL_MARGIN, 0)
       if (p.screenX(0, 0) > p.width - DOCK_HORIZONTAL_MARGIN) {
-        p.popMatrix
+        p.popMatrix()
         p.translate(0, LETTER_SIZE + DOCK_VERTICAL_MARGIN)
-        p.pushMatrix
+        p.pushMatrix()
       }
     }
-    p.popMatrix
+    p.popMatrix()
 
-    p.popMatrix
+    p.popMatrix()
   }
 
   def drawHelp() {
-    p.pushMatrix
+    p.pushMatrix()
     p.translate(DOCK_POSITION - 210, 30)
     p.fill(0, 100)
-    p.noStroke
+    p.noStroke()
     p.rect(0, 0, 200, 60)
     p.fill(255)
     p.textAlign(LEFT)
     p.text("Current letter: " + currentLetter.character, 10, 20)
     p.text("r: reload", 10, 40)
-    p.popMatrix
+    p.popMatrix()
   }
 
   def drawLetterLabel(c: String) {
     p.fill(255)
     p.textAlign(CENTER)
-    p.pushMatrix
+    p.pushMatrix()
     p.translate(30, 140)
     p.scale(3)
     p.text(c, 0, 0)
-    p.popMatrix
+    p.popMatrix()
   }
 
   def handleRect(v: Vec) = new Rect(v.x - HANDLE_SIZE, v.y - HANDLE_SIZE, HANDLE_SIZE * 2, HANDLE_SIZE * 2)
@@ -224,13 +224,13 @@ class LetterEditorTool(override val p: ToolContainer) extends Tool(p) {
 
   override def mouseReleased(e: MouseEvent) {
     if (draggingIndex < 0) return
-    Letter.save
+    Letter.save()
   }
 
 
   override def keyPressed(e: KeyEvent) {
     e.getKeyChar match {
-      case 'r' => reloadLetters
+      case 'r' => reloadLetters()
       case _ => {}
     }
   }
