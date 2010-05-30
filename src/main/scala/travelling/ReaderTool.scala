@@ -32,6 +32,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   var offsets = Map[String, Vec]()
   var trailBuffer: PGraphics = null
   var hueShift: Float = 0f
+  val CURSOR_TIME = 15
 
   override def name = "Reader"
 
@@ -69,6 +70,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
 
     p.pushMatrix()
     p.scale(0.5f)
+    system.flocks.foreach(updateFlockAge)
     system.flocks.foreach(drawFlock)
     p.popMatrix()
 
@@ -86,7 +88,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   def advanceCursor = {
     cursorCountdown -= 1
     if (cursorCountdown <= 0) {
-      cursorCountdown = 15
+      cursorCountdown = CURSOR_TIME
       cursor += 1
       if (cursor >= text.length) {
         cursor = 0
@@ -122,6 +124,8 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   }
 
   def targetFlock(flock: LetterFlock, offset: Vec) {
+    // Reset the age when the letter is used. 
+    flock.age = 0
     val letter = flock.letter
     for (i <- 0 until letter.shape.size) {
       val part = flock.particles(i)
@@ -156,6 +160,13 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     hueShift += 0.1f
     if (hueShift > 1.0f) {
       hueShift = 0f
+    }
+  }
+
+  def updateFlockAge(flock: Flock) {
+    flock.age += 1
+    if (flock.age > CURSOR_TIME * 50) {
+      flock.asInstanceOf[LetterFlock].moveBack()
     }
   }
 

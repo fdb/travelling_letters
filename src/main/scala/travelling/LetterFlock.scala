@@ -12,4 +12,14 @@ class LetterFlock(override val system: ParticleSystem, val letter: Letter, val o
     p
   })
 
+  def moveBack() {
+    var i = 0
+    letter.shape.points.map(pt => {
+      val p = particles(i)
+      p.target = pt * 0.2f + offset
+      i += 1
+    })
+    age = 0
+  }
+
 }

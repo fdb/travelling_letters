@@ -7,6 +7,7 @@ package travelling
 class Flock(val system: ParticleSystem) {
   var particles: Seq[Particle] = List()
   var behaviors: Seq[Behavior] = List()
+  var age: Float = 0
 
   def update(dt: Float) {
     for (b <- behaviors) {
