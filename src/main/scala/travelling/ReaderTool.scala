@@ -31,6 +31,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   var offset = Vec(50, 180)
   var offsets = Map[String, Vec]()
   var trailBuffer: PGraphics = null
+  var hueShift: Float = 0f
 
   override def name = "Reader"
 
@@ -137,7 +138,8 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     trailBuffer.noStroke()
     trailBuffer.rect(0, 0, p.width, p.height)
     trailBuffer.noFill()
-    trailBuffer.stroke(170)
+    val (r, g, b)  = ColorUtils.HSBtoRGB(hueShift, 0.5f, 0.7f)
+    trailBuffer.stroke(r, g, b)
     trailBuffer.strokeWeight(0.9f)
     trailBuffer.scale(0.5f)
     // The offsets start at the top left.
@@ -150,6 +152,11 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     trailBuffer.endShape()
     trailBuffer.endDraw()
     offsets.put(letter.character, offset)
+    // Shift the hue color
+    hueShift += 0.1f
+    if (hueShift > 1.0f) {
+      hueShift = 0f
+    }
   }
 
   def drawFlock(flock: Flock) {
