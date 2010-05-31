@@ -128,6 +128,7 @@ object Letters extends ToolContainer {
     if (!fullscreen) {
       frame.getContentPane().add(applet)
       frame.setSize(800, 600)
+      frame.setLocationRelativeTo(null)
     } else {
 
       while (applet.defaultSize && !applet.finished) {
