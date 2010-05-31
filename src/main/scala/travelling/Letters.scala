@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent
  * Main application.
  */
 object Letters extends ToolContainer {
+  val supportedCharacters = """ABCDEFGHIJKLMNOPQRSTUVWXYZa\u00E0\u00E1\u00E4bcde\u00E8\u00E9\u00EBfghi\u00EFjklmno\u00F6pqrstu\u00FCvwxyz,/.?()"""
+
   val version: String = {
     val properties = new Properties
     properties.load(new FileInputStream("version.properties"))

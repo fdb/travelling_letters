@@ -20,7 +20,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   |vehicles, either as private or public transport. Travel may be local, regional, national (domestic) or international.
   |In some countries, non-local internal travel may require an internal passport, while international travel typically
   |requires a passport and visa. """.stripMargin
-  val initials = """ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,/.?()"""
+  val initials = Letters.supportedCharacters
   val players = Map[String, LetterFlock]()
   val system = new ParticleSystem(800, 600)
   val containBehavior = new Contain(system)
@@ -28,7 +28,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   val attractorBehavior = new FastAttract(system)
   var cursor = -1
   var cursorCountdown = 0
-  var offset = Vec(50, 180)
+  var offset = Vec(50, 240)
   var offsets = Map[String, Vec]()
   var trailBuffer: PGraphics = null
   var hueShift: Float = 0f
@@ -61,12 +61,12 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
 
     // Draw shelf
     p.fill(40)
-    p.rect(0, 0, p.width, 80)
+    p.rect(0, 0, p.width, 100)
 
     // Drawing style for letters
     p.noFill()
     p.stroke(255)
-    p.strokeWeight(5f)
+    p.strokeWeight(4f)
 
     p.pushMatrix()
     p.scale(0.5f)

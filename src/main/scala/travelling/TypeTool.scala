@@ -9,7 +9,7 @@ import scala.collection.mutable.Map
  * Type your own text and see the letters move.
  */
 class TypeTool(override val p: ToolContainer) extends Tool(p) {
-  val initials = """ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890,./?;:"'<>|"""
+  val initials = Letters.supportedCharacters
   val players = Map[String, LetterFlock]()
   val system = new ParticleSystem(800, 600)
   val containBehavior = new Contain(system)
