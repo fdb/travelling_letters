@@ -10,6 +10,8 @@ class Particle(val flock: Flock) {
   var age = 0f
   var velocityMax = 380f + (random.toFloat * 10f)
   var target = Vec()
+  var absVelocity = Vec()
+  var tmpFloat: Float = 0f
   //var lifeTime = 10 * 1000f
 
   def system() = flock.system
@@ -20,15 +22,21 @@ class Particle(val flock: Flock) {
   }
 
   def updatePosition(dt: Float) {
-    steer = steer.clamp(steerMax)
-    velocity = velocity + steer
-    velocity = velocity.clamp(velocityMax)
+    //steer = steer.clamp(steerMax)
+    steer.clampIt(steerMax)
+    //velocity = velocity + steer
+    //velocity = velocity.clamp(velocityMax)
+    velocity += steer
+    velocity.clampIt(velocityMax)
 
-    val absVelocity = velocity * (dt / system.timeStep)
+    tmpFloat = dt / system.timeStep
+    absVelocity.x = velocity.x * tmpFloat
+    absVelocity.y = velocity.y * tmpFloat
+    //absVelocity = velocity * (dt / system.timeStep)
     pos += absVelocity
 
-    velocity = velocity * system.friction
-    steer = Vec()
+    velocity *= system.friction
+    steer.nullMe()
   }
 
 }

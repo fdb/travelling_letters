@@ -73,14 +73,34 @@ object Vec {
   }
 }
 
-class Vec(val x: Float, val y: Float) {
+class Vec(var x: Float, var y: Float) {
   def this() = this (0, 0)
 
   final def +(v: Float) = new Vec(x + v, y + v)
 
+  final def +=(v: Vec) {
+    x += v.x
+    y += v.y
+  }
+
   final def -(v: Float) = new Vec(x - v, y - v)
 
   final def *(v: Float) = new Vec(x * v, y * v)
+
+  final def *=(v: Float) {
+    x *= v
+    y *= v
+  }
+
+  final def nullMe() {
+    x = 0
+    y = 0
+  }
+
+  final def setTo(v: Vec) {
+    x = v.x
+    y = v.y
+  }
 
   final def /(v: Float) = new Vec(x / v, y / v)
 
@@ -106,6 +126,18 @@ class Vec(val x: Float, val y: Float) {
     val dx = this.x - x
     val dy = this.y - y
     dx * dx + dy * dy
+  }
+
+  final def clampIt(max: Float) {
+     val absX = abs(x)
+    val absY = abs(y)
+    if (absX >= absY && absX > max) {
+      x = x / absX * max
+      y = max / absX * y
+    } else if (absY > absX && absY > max) {
+      x = max / absY * x
+      y = y / absY * max
+    }
   }
 
   final def clamp(max: Float): Vec = {

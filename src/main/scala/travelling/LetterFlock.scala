@@ -16,7 +16,9 @@ class LetterFlock(override val system: ParticleSystem, val letter: Letter, val o
     var i = 0
     letter.shape.points.map(pt => {
       val p = particles(i)
-      p.target = pt * 0.2f + offset
+      p.target.x = pt.x * 0.2f + offset.x
+      p.target.y = pt.y * 0.2f + offset.y
+      // p.target = pt * 0.2f + offset
       i += 1
     })
     age = 0

@@ -19,11 +19,11 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   var cursor = -1
   var cursorCountdown = 0
   val startOffset = Vec(50, 240)
-  var offset = startOffset
+  var offset = Vec(startOffset)
   var offsets = Map[String, Vec]()
   var trailBuffer: PGraphics = null
   var hueShift: Float = 0f
-  val CURSOR_TIME = 1
+  val CURSOR_TIME = 5
   var resetting = false
   val globalScale = 0.5f
 
@@ -72,7 +72,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
       if (cursorChar == "\n") {
         system.flocks.foreach(flock => flock.asInstanceOf[LetterFlock].moveBack())
         cursorCountdown = CURSOR_TIME * 5
-        offset = startOffset
+        offset.setTo(startOffset)
         resetting = true
       } else {
         resetting = false
