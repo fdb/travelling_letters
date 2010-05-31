@@ -1,2 +1,2 @@
 fullscreen = true
-reader.cursorTime = 10
+reader.cursorTime = 15
