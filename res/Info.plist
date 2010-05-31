@@ -27,7 +27,7 @@
             <key>ClassPath</key>
             <string>$APP_PACKAGE/Contents/Resources/Java/processing-core.jar:$APP_PACKAGE/Contents/Resources/Java/scala-compiler.jar:$APP_PACKAGE/Contents/Resources/Java/scala-library.jar:$APP_PACKAGE/Contents/Resources/Java/travelling-letters.jar</string>
             <key>JVMVersion</key>
-            <string>1.5*</string>
+            <string>1.6*</string>
             <key>MainClass</key>
             <string>travelling.Letters</string>
             <key>Properties</key>
