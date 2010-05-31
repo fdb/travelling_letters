@@ -45,10 +45,6 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   override def draw() {
     system.update(0.1f)
 
-    // Draw background
-    //p.fill(60, 200)
-    //p.rect(0, 0, p.width, p.height)
-
     // Draw trails
     p.image(trailImage, 0, 0)
 
@@ -92,7 +88,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
       trailBuffer.noStroke()
       trailBuffer.rect(0, 0, p.width, p.height)
       trailBuffer.endDraw()
-      trailImage = trailBuffer.get
+      trailImage = trailBuffer
     }
   }
 
@@ -169,7 +165,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     trailBuffer.bezierVertex(previousOffset.x, mid.y + droop, offset.x, mid.y + droop, offset.x, offset.y)
     trailBuffer.endShape()
     trailBuffer.endDraw()
-    trailImage = trailBuffer.get
+    trailImage = trailBuffer
     offsets.put(letter.character, Vec(offset))
     // Shift the hue color
     hueShift += 0.1f
