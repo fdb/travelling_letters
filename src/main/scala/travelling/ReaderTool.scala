@@ -116,7 +116,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
       offset = Vec(50, offset.y + 120)
     }
     if (offset.y > p.height / globalScale - 200) {
-      offset = startOffset
+      offset = Vec(startOffset)
     }
   }
 
@@ -145,12 +145,18 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     val previousOffset = offsets(letter.character)
     val delta = offset - previousOffset
     val mid = previousOffset + delta / 2
-    val droop = 30f
+    val droop = 50f
 
     trailBuffer.beginDraw()
     trailBuffer.smooth()
     trailBuffer.noFill()
-    val (r, g, b) = ColorUtils.HSBtoRGB(hueShift, 0.5f, 0.7f)
+
+    val c = letter.character(0)
+    var relativePosition = initials.indexOf(c) / (initials.size.toFloat / 2f)
+    if (relativePosition > 1f) {
+      relativePosition -= 1f
+    }
+    val (r, g, b) = ColorUtils.HSBtoRGB(relativePosition, 0.5f, 0.7f)
     trailBuffer.stroke(r, g, b)
     trailBuffer.strokeWeight(0.9f)
     trailBuffer.scale(0.5f)
