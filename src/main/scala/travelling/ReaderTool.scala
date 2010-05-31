@@ -2,24 +2,14 @@ package travelling
 
 import processing.core._
 import PConstants._
-import java.awt.event.{KeyEvent, MouseEvent}
 import scala.collection.mutable.Map
+import io.{Codec, Source}
 
 /**
  * Allows you to read a text by morphing the letters.
  */
 class ReaderTool(override val p: ToolContainer) extends Tool(p) {
-  val text = """Travel is the movement of people between relatively distant geographical locations for any purpose and
-  |any duration, with or without any means of transport. Travel also includes relatively short stays between successive
-  |movements. Movements between locations requiring only a few minutes are not considered as travel. As an activity,
-  |"travel" also covers all the activities performed during a travel. Travel is a wider concept than a trip. A round trip
-  |is a particular type of travel whereby a person moves from his/her usual residence to one or several distant locations
-  |and returns. A trip can also be part of a round trip. Travel is most commonly done for recreation or to visit friends
-  |and family (generally as part of tourism), for business or for commuting; but may be for numerous other reasons, such
-  |as health care, migration, fleeing war, etc. Travel may occur by walking or human-powered mode, or through mechanical
-  |vehicles, either as private or public transport. Travel may be local, regional, national (domestic) or international.
-  |In some countries, non-local internal travel may require an internal passport, while international travel typically
-  |requires a passport and visa. """.stripMargin
+  val text = Source.fromPath("text.txt")(Codec.UTF8).mkString
   val initials = Letters.supportedCharacters
   val players = Map[String, LetterFlock]()
   val system = new ParticleSystem(800, 600)
@@ -28,11 +18,14 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   val attractorBehavior = new FastAttract(system)
   var cursor = -1
   var cursorCountdown = 0
-  var offset = Vec(50, 240)
+  val startOffset = Vec(50, 240)
+  var offset = startOffset
   var offsets = Map[String, Vec]()
   var trailBuffer: PGraphics = null
   var hueShift: Float = 0f
   val CURSOR_TIME = 15
+  var resetting = false
+  val globalScale = 0.5f
 
   override def name = "Reader"
 
@@ -57,7 +50,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     p.rect(0, 0, p.width, p.height)
 
     // Draw trails
-   p.image(trailBuffer.get(), 0, 0)
+    p.image(trailBuffer.get(), 0, 0)
 
     // Draw shelf
     p.fill(40)
@@ -68,20 +61,39 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     p.stroke(255)
     p.strokeWeight(4f)
 
+    p.rect(p.width-5, p.height-5, 5, 5)
+
     p.pushMatrix()
-    p.scale(0.5f)
+    p.scale(globalScale)
     system.flocks.foreach(updateFlockAge)
     system.flocks.foreach(drawFlock)
     p.popMatrix()
 
     if (advanceCursor) {
       val cursorChar = text(cursor).toString
-      if (players.contains(cursorChar)) {
-        val letterFlock = players(cursorChar)
-        //letterFlock.letter.shape = createLetterShape(cursorChar)
-        targetFlock(letterFlock, offset)
+      if (cursorChar == "\n") {
+        system.flocks.foreach(flock => flock.asInstanceOf[LetterFlock].moveBack())
+        cursorCountdown = CURSOR_TIME * 5
+        offset = startOffset
+        resetting = true
+      } else {
+        resetting = false
+        if (players.contains(cursorChar)) {
+          val letterFlock = players(cursorChar)
+          //letterFlock.letter.shape = createLetterShape(cursorChar)
+          targetFlock(letterFlock, offset)
+        }
+        advanceOffset()
       }
-      advanceOffset()
+    }
+
+    if (resetting) {
+      trailBuffer.beginDraw()
+      trailBuffer.smooth()
+      trailBuffer.fill(60, 50)
+      trailBuffer.noStroke()
+      trailBuffer.rect(0, 0, p.width, p.height)
+      trailBuffer.endDraw()
     }
   }
 
@@ -101,11 +113,11 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
 
   def advanceOffset() {
     offset += Vec(70, 0)
-    if (offset.x > 1500) {
+    if (offset.x > p.width / globalScale - 100) {
       offset = Vec(50, offset.y + 120)
     }
-    if (offset.y > 1100) {
-      offset = Vec(50, 150)
+    if (offset.y > p.height / globalScale - 100) {
+      offset = startOffset
     }
   }
 
@@ -142,7 +154,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     trailBuffer.noStroke()
     trailBuffer.rect(0, 0, p.width, p.height)
     trailBuffer.noFill()
-    val (r, g, b)  = ColorUtils.HSBtoRGB(hueShift, 0.5f, 0.7f)
+    val (r, g, b) = ColorUtils.HSBtoRGB(hueShift, 0.5f, 0.7f)
     trailBuffer.stroke(r, g, b)
     trailBuffer.strokeWeight(0.9f)
     trailBuffer.scale(0.5f)
