@@ -57,7 +57,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     // Drawing style for letters
     p.noFill()
     p.stroke(255)
-    p.strokeWeight(4f)
+    p.strokeWeight(5f)
 
     p.pushMatrix()
     p.scale(globalScale)
