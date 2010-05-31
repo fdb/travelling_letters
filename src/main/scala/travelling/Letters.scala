@@ -2,14 +2,26 @@ package travelling
 
 import java.util.Properties
 import java.io._
-import processing.core._
-import PConstants._
-import java.awt.event.KeyEvent
+import java.awt._
 
 /**
  * Main application.
  */
 object Letters extends ToolContainer {
+  val fullscreen = true
+  val environment = GraphicsEnvironment.getLocalGraphicsEnvironment()
+  val displayDevice = environment.getDefaultScreenDevice()
+  val mode = displayDevice.getDisplayMode
+  var tmpWidth = 800
+  var tmpHeight = 600
+  if (fullscreen) {
+    tmpWidth = mode.getWidth()
+    tmpHeight = mode.getHeight()
+  }
+  val appletWidth = tmpWidth
+  val appletHeight = tmpHeight
+
+
   val supportedCharacters = """ABCDEFGHIJKLMNOPQRSTUVWXYZa\u00E0\u00E1\u00E4bcde\u00E8\u00E9\u00EBfghi\u00EFjklmno\u00F6pqrstu\u00FCvwxyz,/.?()"""
 
   val version: String = {
@@ -41,30 +53,34 @@ object Letters extends ToolContainer {
   val READER_TOOL = new ReaderTool(this)
   val TYPE_TOOL = new TypeTool(this)
   val LETTER_EDITOR_TOOL = new LetterEditorTool(this)
-  tool = VIEWER_TOOL
+  tool = READER_TOOL
 
   override def setup {
-    size(800, 600, JAVA2D)
-    smooth
+    size(appletWidth, appletHeight, "processing.core.PGraphicsJava2D") // Should be JAVA2D, but the compiler can't find it.
+    smooth()
     val pFont = createFont("Lucida Grande", 11)
     textFont(pFont)
-    VIEWER_TOOL.setup
-    READER_TOOL.setup
-    TYPE_TOOL.setup
-    LETTER_EDITOR_TOOL.setup
+    VIEWER_TOOL.setup()
+    READER_TOOL.setup()
+    TYPE_TOOL.setup()
+    LETTER_EDITOR_TOOL.setup()
   }
 
   override def draw {
-    super.draw
-    resetMatrix
-    drawHeader
+    super.draw()
+    resetMatrix()
+    noStroke()
+    fill(160)
+    if (!fullscreen) {
+      drawHeader()
+    }
   }
 
-  def drawHeader {
+  def drawHeader() {
     noStroke
     fill(160)
     rect(0, 0, width, 20)
-    textAlign(LEFT)
+    textAlign(37 /* LEFT */ ) // Should be LEFT, but the compiler can't find the constant.
     val oldTool = tool
     if (appLabel("View", Rect(5, 0, 50, 20))) {
       tool = VIEWER_TOOL
@@ -108,9 +124,31 @@ object Letters extends ToolContainer {
     var frame = new javax.swing.JFrame("Travelling Letters")
     frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE)
     var applet = Letters
-    frame.getContentPane().add(applet)
-    frame.setSize(800, 600)
-    applet.init
+    applet.init()
+    if (!fullscreen) {
+      frame.getContentPane().add(applet)
+      frame.setSize(800, 600)
+    } else {
+
+      while (applet.defaultSize && !applet.finished) {
+        Thread.sleep(5)
+      }
+
+      frame.setUndecorated(true)
+      frame.setBackground(new Color(255, 0, 0))
+      System.setProperty("apple.awt.fullscreenhidecursor","true")
+
+      displayDevice.setFullScreenWindow(frame)
+      frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH)
+
+      val fullScreenRect = frame.getBounds() // new Rectangle(0, 0, mode.getWidth(), mode.getHeight())
+      //frame.setBounds(fullScreenRect)
+      frame.getContentPane().setLayout(null)
+      frame.getContentPane().add(applet)
+      applet.setBounds(0, 0, appletWidth, appletHeight)
+      frame.invalidate()
+    }
     frame.setVisible(true)
+    applet.requestFocus()
   }
 }

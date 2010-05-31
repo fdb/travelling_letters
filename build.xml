@@ -78,6 +78,8 @@
         <copy file="version.properties" todir="${dist.mac.app}/Contents/Resources"/>
         <!-- Copy letters.txt -->
         <copy file="letters.txt" todir="${dist.mac.app}/Contents/Resources"/>
+        <!-- Copy text.txt -->
+        <copy file="text.txt" todir="${dist.mac.app}/Contents/Resources"/>
         <!-- Make directory into a bundle -->
         <exec executable="/Developer/Tools/SetFile">
             <arg line="-a B ${dist.mac.app}"/>

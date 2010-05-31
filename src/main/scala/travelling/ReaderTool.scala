@@ -12,7 +12,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   val text = Source.fromPath("text.txt")(Codec.UTF8).mkString
   val initials = Letters.supportedCharacters
   val players = Map[String, LetterFlock]()
-  val system = new ParticleSystem(800, 600)
+  val system = new ParticleSystem(p.width, p.height)
   val containBehavior = new Contain(system)
   containBehavior.max = Vec(1600, 1200)
   val attractorBehavior = new FastAttract(system)
@@ -23,7 +23,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   var offsets = Map[String, Vec]()
   var trailBuffer: PGraphics = null
   var hueShift: Float = 0f
-  val CURSOR_TIME = 15
+  val CURSOR_TIME = 1
   var resetting = false
   val globalScale = 0.5f
 
@@ -35,7 +35,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
       players.put(c.toString, createLetterFlock(c.toString, shelfOffset))
       offsets.put(c.toString, shelfOffset)
       shelfOffset += Vec(50, 0)
-      if (shelfOffset.x > 1500) {
+      if (shelfOffset.x > p.width / globalScale - 100) {
         shelfOffset = Vec(50, shelfOffset.y + 50)
       }
     }
@@ -60,8 +60,6 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     p.noFill()
     p.stroke(255)
     p.strokeWeight(4f)
-
-    p.rect(p.width-5, p.height-5, 5, 5)
 
     p.pushMatrix()
     p.scale(globalScale)
@@ -116,7 +114,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     if (offset.x > p.width / globalScale - 100) {
       offset = Vec(50, offset.y + 120)
     }
-    if (offset.y > p.height / globalScale - 100) {
+    if (offset.y > p.height / globalScale - 200) {
       offset = startOffset
     }
   }

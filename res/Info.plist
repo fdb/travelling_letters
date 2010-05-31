@@ -36,6 +36,8 @@
                 <string>false</string>
                 <key>apple.laf.useScreenMenuBar</key>
                 <string>true</string>
+                <key>apple.awt.fullscreenhidecursor</key>
+                <string>true</string>
                 <key>com.apple.mrj.application.apple.menu.about.name</key>
                 <string>Travelling Letters</string>
                 <key>apple.awt.graphics.UseQuartz</key>

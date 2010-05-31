@@ -18,7 +18,7 @@ class ViewerTool(override val p: ToolContainer) extends Tool(p) {
   override def name() = "Viewer"
 
   override def setup(): Unit = {
-    containBehavior.max = Vec(800, 600)
+    containBehavior.max = Vec(p.width, p.height)
     p.noStroke()
     for (t <- text) createLetter(t.toString)
   }
