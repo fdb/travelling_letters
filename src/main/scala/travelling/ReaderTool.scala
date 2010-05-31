@@ -32,8 +32,8 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   override def setup() {
     var shelfOffset = Vec(50, 60)
     for (c <- initials) {
-      players.put(c.toString, createLetterFlock(c.toString, shelfOffset))
-      offsets.put(c.toString, shelfOffset)
+      players.put(c.toString, createLetterFlock(c.toString, Vec(shelfOffset)))
+      offsets.put(c.toString, Vec(shelfOffset))
       shelfOffset += Vec(50, 0)
       if (shelfOffset.x > p.width / globalScale - 100) {
         shelfOffset = Vec(50, shelfOffset.y + 50)
