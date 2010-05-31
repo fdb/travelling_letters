@@ -13,8 +13,6 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   val initials = Letters.supportedCharacters
   val players = Map[String, LetterFlock]()
   val system = new ParticleSystem(p.width, p.height)
-  val containBehavior = new Contain(system)
-  containBehavior.max = Vec(1600, 1200)
   val attractorBehavior = new FastAttract(system)
   var cursor = -1
   val CURSOR_TIME = Settings("reader.cursorTime").toInt
@@ -128,7 +126,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     val shape = createLetterShape(character)
     val letter = new Letter(character, shape)
     val flock = new LetterFlock(system, letter, offset)
-    flock.behaviors = List(attractorBehavior, containBehavior)
+    flock.behaviors = List(attractorBehavior)
     system.flocks = system.flocks.toList ::: List(flock)
     flock
   }
