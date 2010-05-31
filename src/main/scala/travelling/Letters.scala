@@ -8,7 +8,7 @@ import java.awt._
  * Main application.
  */
 object Letters extends ToolContainer {
-  val fullscreen = true
+  val fullscreen = Settings("fullscreen").toBoolean
   val environment = GraphicsEnvironment.getLocalGraphicsEnvironment()
   val displayDevice = environment.getDefaultScreenDevice()
   val mode = displayDevice.getDisplayMode
