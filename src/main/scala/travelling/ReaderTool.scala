@@ -17,13 +17,13 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   containBehavior.max = Vec(1600, 1200)
   val attractorBehavior = new FastAttract(system)
   var cursor = -1
-  var cursorCountdown = 0
+  val CURSOR_TIME = Settings("reader.cursorTime").toInt
+  var cursorCountdown = CURSOR_TIME
   val startOffset = Vec(50, 240)
   var offset = Vec(startOffset)
   var offsets = Map[String, Vec]()
   var trailBuffer: PGraphics = null
   var hueShift: Float = 0f
-  val CURSOR_TIME = 5
   var resetting = false
   val globalScale = 0.5f
 
