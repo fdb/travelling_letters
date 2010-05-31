@@ -136,7 +136,7 @@ object Letters extends ToolContainer {
       }
 
       frame.setUndecorated(true)
-      frame.setBackground(new Color(255, 0, 0))
+      frame.setBackground(new Color(0, 0, 0))
       System.setProperty("apple.awt.fullscreenhidecursor","true")
 
       displayDevice.setFullScreenWindow(frame)
