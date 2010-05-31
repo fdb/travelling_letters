@@ -163,7 +163,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     trailBuffer.bezierVertex(previousOffset.x, mid.y + droop, offset.x, mid.y + droop, offset.x, offset.y)
     trailBuffer.endShape()
     trailBuffer.endDraw()
-    offsets.put(letter.character, offset)
+    offsets.put(letter.character, Vec(offset))
     // Shift the hue color
     hueShift += 0.1f
     if (hueShift > 1.0f) {
