@@ -4,6 +4,7 @@ import processing.core._
 import PConstants._
 import scala.collection.mutable.Map
 import io.{Codec, Source}
+import scala.math.log
 
 /**
  * Allows you to read a text by morphing the letters.
@@ -25,6 +26,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   var hueShift: Float = 0f
   var resetting = false
   val globalScale = 0.5f
+  val frequencies = Map[String, Int]()
 
   override def name = "Reader"
 
@@ -71,6 +73,10 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
         offset.setTo(startOffset)
         resetting = true
       } else {
+        if (resetting) {
+          // Reset all frequencies
+          frequencies.clear()
+        }
         resetting = false
         if (players.contains(cursorChar)) {
           val letterFlock = players(cursorChar)
@@ -134,6 +140,9 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     // Reset the age when the letter is used. 
     flock.age = 0
     val letter = flock.letter
+    var frequency = frequencies.getOrElse(letter.character, 0)
+    frequency += 1
+    frequencies.put(letter.character, frequency)
     for (i <- 0 until letter.shape.size) {
       val part = flock.particles(i)
       part.target = letter.shape.points(i) + offset
@@ -148,13 +157,10 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     trailBuffer.noFill()
 
     val c = letter.character(0)
-    var relativePosition = initials.indexOf(c) / (initials.size.toFloat / 2f)
-    if (relativePosition > 1f) {
-      relativePosition -= 1f
-    }
+    var relativePosition = initials.indexOf(c) / initials.size.toFloat
     val (r, g, b) = ColorUtils.HSBtoRGB(relativePosition, 0.5f, 0.7f)
     trailBuffer.stroke(r, g, b)
-    trailBuffer.strokeWeight(0.9f)
+    trailBuffer.strokeWeight(log(frequency).toFloat)
     trailBuffer.scale(0.5f)
     // The offsets start at the top left.
     // Most letters are 60 wide, so middle = 30.
