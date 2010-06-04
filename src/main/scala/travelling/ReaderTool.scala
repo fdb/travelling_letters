@@ -19,6 +19,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   val CURSOR_TIME = Settings("reader.cursorTime").toInt
   val RANDOM_OFFSET_OVER_TIME = Settings("reader.randomOffsetOverTime").toFloat
   val MOVE_BACK_TIME = Settings("reader.moveBackTime").toInt
+  val STROKE_WEIGHT_INCREASE = Settings("reader.strokeWeightIncrease").toFloat
   var cursorCountdown = CURSOR_TIME
   val startOffset = Vec(50, 240)
   var offset = Vec(startOffset)
@@ -161,9 +162,10 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
 
     val c = letter.character(0)
     var relativePosition = initials.indexOf(c) / initials.size.toFloat
-    val (r, g, b) = ColorUtils.HSBtoRGB(relativePosition, 0.5f, 0.7f)
+    relativePosition /= 0.5f
+    val (r, g, b) = ColorUtils.HSBtoRGB(relativePosition, 0.5f, 0.4f)
     trailBuffer.stroke(r, g, b)
-    trailBuffer.strokeWeight(log(frequency).toFloat)
+    trailBuffer.strokeWeight(frequency * STROKE_WEIGHT_INCREASE)
     trailBuffer.scale(0.5f)
     // The offsets start at the top left.
     // Most letters are 60 wide, so middle = 30.
