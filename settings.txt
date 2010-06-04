@@ -1,2 +1,3 @@
 fullscreen = true
 reader.cursorTime = 15
+reader.randomOffsetOverTime = 0.5
