@@ -4,7 +4,7 @@ import processing.core._
 import PConstants._
 import scala.collection.mutable.Map
 import io.{Codec, Source}
-import scala.math.{log, random}
+import scala.math.{log, random, min}
 
 /**
  * Allows you to read a text by morphing the letters.
@@ -18,6 +18,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   var cursor = -1
   val CURSOR_TIME = Settings("reader.cursorTime").toInt
   val RANDOM_OFFSET_OVER_TIME = Settings("reader.randomOffsetOverTime").toFloat
+  val MOVE_BACK_TIME = Settings("reader.moveBackTime").toInt
   var cursorCountdown = CURSOR_TIME
   val startOffset = Vec(50, 240)
   var offset = Vec(startOffset)
@@ -184,12 +185,15 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
 
   def updateFlockAge(flock: Flock) {
     flock.age += 1
-    if (flock.age > CURSOR_TIME * 50) {
+    if (flock.age > CURSOR_TIME * MOVE_BACK_TIME) {
       flock.asInstanceOf[LetterFlock].moveBack()
     }
   }
 
   def drawFlock(flock: Flock) {
+    val letter = flock.asInstanceOf[LetterFlock].letter
+    val frequency = min(frequencies.getOrElse(letter.character, 0), 127) * 2
+    p.stroke(255 - frequency)
     p.beginShape()
     for (prt <- flock.particles) {
       p.vertex(prt.pos.x, prt.pos.y)
