@@ -3,6 +3,7 @@ package travelling
 import java.util.Properties
 import java.io._
 import java.awt._
+import event.KeyEvent
 
 /**
  * Main application.
@@ -76,6 +77,15 @@ object Letters extends ToolContainer {
     }
   }
 
+  override def keyPressed(e: KeyEvent) {
+    if (e.getKeyCode == KeyEvent.VK_ESCAPE) {
+      exit()
+    } else {
+      tool.keyPressed(e)
+    }
+  }
+
+
   def drawHeader() {
     noStroke
     fill(160)
@@ -137,7 +147,7 @@ object Letters extends ToolContainer {
 
       frame.setUndecorated(true)
       frame.setBackground(new Color(0, 0, 0))
-      System.setProperty("apple.awt.fullscreenhidecursor","true")
+      System.setProperty("apple.awt.fullscreenhidecursor", "true")
 
       displayDevice.setFullScreenWindow(frame)
       frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH)
