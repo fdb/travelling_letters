@@ -19,7 +19,6 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   val CURSOR_TIME = Settings("reader.cursorTime").toInt
   val RANDOM_OFFSET_OVER_TIME = Settings("reader.randomOffsetOverTime").toFloat
   val MOVE_BACK_TIME = Settings("reader.moveBackTime").toInt
-  val STROKE_WEIGHT_INCREASE = Settings("reader.strokeWeightIncrease").toFloat
   var cursorCountdown = CURSOR_TIME
   val startOffset = Vec(50, 240)
   var offset = Vec(startOffset)
@@ -30,6 +29,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   var resetting = false
   val globalScale = 0.5f
   val frequencies = Map[String, Int]()
+  var randomHueOffset = random.toFloat
 
   override def name = "Reader"
 
@@ -37,14 +37,25 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     var shelfOffset = Vec(50, 60)
     for (c <- initials) {
       players.put(c.toString, createLetterFlock(c.toString, Vec(shelfOffset)))
+      shelfOffset += Vec(50, 0)
+      if (shelfOffset.x > p.width / globalScale - 100) {
+        shelfOffset = Vec(50, shelfOffset.y + 50)
+      }
+    }
+    setOffsets()
+    trailBuffer = p.createGraphics(p.width, p.height, JAVA2D)
+    trailImage = trailBuffer.get
+  }
+
+  def setOffsets() {
+    var shelfOffset = Vec(50, 60)
+    for (c <- initials) {
       offsets.put(c.toString, Vec(shelfOffset))
       shelfOffset += Vec(50, 0)
       if (shelfOffset.x > p.width / globalScale - 100) {
         shelfOffset = Vec(50, shelfOffset.y + 50)
       }
     }
-    trailBuffer = p.createGraphics(p.width, p.height, JAVA2D)
-    trailImage = trailBuffer.get
   }
 
   override def draw() {
@@ -74,6 +85,8 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
         system.flocks.foreach(flock => flock.asInstanceOf[LetterFlock].moveBack())
         cursorCountdown = CURSOR_TIME * 5
         offset.setTo(startOffset)
+        randomHueOffset = random.toFloat
+        setOffsets()
         resetting = true
       } else {
         if (resetting) {
@@ -162,10 +175,13 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
 
     val c = letter.character(0)
     var relativePosition = initials.indexOf(c) / initials.size.toFloat
-    relativePosition /= 0.5f
-    val (r, g, b) = ColorUtils.HSBtoRGB(relativePosition, 0.5f, 0.4f)
+    var hue = relativePosition + randomHueOffset
+    if (hue > 1f) {
+      hue -= 1f
+    }
+    val (r, g, b) = ColorUtils.HSBtoRGB(hue, 0.7f, 0.4f)
     trailBuffer.stroke(r, g, b)
-    trailBuffer.strokeWeight(frequency * STROKE_WEIGHT_INCREASE)
+    trailBuffer.strokeWeight(1.5f)
     trailBuffer.scale(0.5f)
     // The offsets start at the top left.
     // Most letters are 60 wide, so middle = 30.
@@ -178,11 +194,6 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     trailBuffer.endDraw()
     trailImage = trailBuffer
     offsets.put(letter.character, Vec(offset))
-    // Shift the hue color
-    hueShift += 0.1f
-    if (hueShift > 1.0f) {
-      hueShift = 0f
-    }
   }
 
   def updateFlockAge(flock: Flock) {
@@ -194,7 +205,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
 
   def drawFlock(flock: Flock) {
     val letter = flock.asInstanceOf[LetterFlock].letter
-    val frequency = min(frequencies.getOrElse(letter.character, 0), 127) * 2
+    val frequency = min(frequencies.getOrElse(letter.character, 0), 150)
     p.stroke(255 - frequency)
     p.beginShape()
     for (prt <- flock.particles) {
