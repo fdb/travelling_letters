@@ -29,6 +29,7 @@
             <classpath>
                 <pathelement location="${lib.dir}/scala-compiler.jar"/>
                 <pathelement location="${lib.dir}/scala-library.jar"/>
+                <pathelement location="${lib.dir}/scala-reflect.jar"/>
             </classpath>
         </taskdef>
     </target>
@@ -82,18 +83,6 @@
         <copy file="text.txt" todir="${dist.mac.app}/Contents/Resources"/>
         <!-- Copy settings.txt -->
         <copy file="settings.txt" todir="${dist.mac.app}/Contents/Resources"/>
-        <!-- Make directory into a bundle -->
-        <exec executable="/Developer/Tools/SetFile">
-            <arg line="-a B ${dist.mac.app}"/>
-        </exec>
-        <!-- Bundle into DMG -->
-        <exec executable="hdiutil">
-            <arg line="create -srcfolder ${dist.mac}  ${dist.dir}/${ant.project.name}-${app.version}.dmg"/>
-        </exec>
-        <!-- Internet-enable DMG -->
-        <exec executable="hdiutil">
-            <arg line="internet-enable ${dist.dir}/${ant.project.name}-${app.version}.dmg"/>
-        </exec>
     </target>
 
 </project>

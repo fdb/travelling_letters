@@ -7,7 +7,7 @@ import scala.collection.JavaConversions._
 
 object Letter {
   val letters: Map[String, Letter] = Map()
-  val DEFAULT_LETTER = new Letter("\0", new Polygon(List(Vec(0, 0), Vec(40, 0), Vec(40, 100), Vec(0, 100), Vec(0, 0))))
+  val DEFAULT_LETTER = new Letter("\u0000", new Polygon(List(Vec(0, 0), Vec(40, 0), Vec(40, 100), Vec(0, 100), Vec(0, 0))))
 
   def exists(character: String) = letters.contains(character)
 

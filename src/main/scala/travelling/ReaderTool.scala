@@ -10,7 +10,7 @@ import scala.math.{log, random, min}
  * Allows you to read a text by morphing the letters.
  */
 class ReaderTool(override val p: ToolContainer) extends Tool(p) {
-  val text = Source.fromPath("text.txt")(Codec.UTF8).mkString
+  val text = Source.fromFile("text.txt")(Codec.UTF8).mkString
   val initials = Letters.supportedCharacters
   val players = Map[String, LetterFlock]()
   val system = new ParticleSystem(p.width, p.height)
@@ -153,7 +153,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
   }
 
   def targetFlock(flock: LetterFlock, offset: Vec) {
-    // Reset the age when the letter is used. 
+    // Reset the age when the letter is used.
     flock.age = 0
     val letter = flock.letter
     var frequency = frequencies.getOrElse(letter.character, 0)
@@ -185,7 +185,7 @@ class ReaderTool(override val p: ToolContainer) extends Tool(p) {
     trailBuffer.scale(0.5f)
     // The offsets start at the top left.
     // Most letters are 60 wide, so middle = 30.
-    // The baseline is at y=100. 
+    // The baseline is at y=100.
     trailBuffer.translate(30, 100)
     trailBuffer.beginShape()
     trailBuffer.vertex(previousOffset.x, previousOffset.y)
