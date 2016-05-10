@@ -148,6 +148,11 @@ object Letters extends ToolContainer {
       frame.setUndecorated(true)
       frame.setBackground(new Color(0, 0, 0))
       System.setProperty("apple.awt.fullscreenhidecursor", "true")
+      var toolkit = java.awt.Toolkit.getDefaultToolkit()
+      var hotSpot = new Point(0, 0)
+      var cursorImage = new java.awt.image.BufferedImage(1, 1, java.awt.Transparency.TRANSLUCENT)
+      var invisibleCursor = toolkit.createCustomCursor(cursorImage, hotSpot, "InvisibleCursor")
+      setCursor(invisibleCursor)
 
       displayDevice.setFullScreenWindow(frame)
       frame.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH)
