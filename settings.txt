@@ -1,4 +1,4 @@
 fullscreen = true
-reader.cursorTime = 15
+reader.cursorTime = 3
 reader.randomOffsetOverTime = 0.3
 reader.moveBackTime = 100
